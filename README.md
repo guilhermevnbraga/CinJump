@@ -1,2 +1,2 @@
-# OJogo
-O Jogo
+# CinJump
+Cin Jump
