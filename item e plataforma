@@ -78,8 +78,7 @@ class item:
             if self.X > LARGURA - self.L or self.X < 0:
                 self.velocidade *= -1
     def sumir_item(self, player, item):
-        if item!= None and self.mola==False:
-            if player.colliderect(item):
+        if player.colliderect(item):
                 return True
     def cor(self):
         return self.cor
@@ -164,9 +163,10 @@ while rodar:
             if plataforma.sumir_vermelho(R_PLAYER, plataforma_aux):
                 plataformas_aux.pop(i)
                 plataformas.pop(i)
-        if item.sumir_item(R_PLAYER, item_aux):
-                itens_aux.pop(i)
-                itens.pop(i)        
+        if plataforma.get_cor()!= cores_plataforma['branco'] and item_aux!=None:
+            if item.sumir_item(R_PLAYER, item_aux):
+                    itens_aux.pop(i)
+                    itens.pop(i)        
         plataforma.mover_azul(LARGURA) 
         plataforma.desenhar(TELA)  
         item.desenho(TELA)
