@@ -440,15 +440,14 @@ def construir_mapa(LISTA_PLATAFORMAS,LARGURA,TELA):
         plataform_cor = plataform.desenhar(TELA)
         plataformas.append(plataform)
         plataformas_aux.append(plataform_cor)
+        print(plataformas_aux)
         P_Y -= 30 + randint(30, 150)
     return plataformas, plataformas_aux  
         
 
 # AREA DE TESTES RETIRAR QUANDO O CÓDIGO FOR FINALIZADO
 
-PLAYER = (254,254,0)
-X_PLAYER = 300
-Y_PLAYER = 750
+
 LARGURA = 600
 ALTURA = 800
 FPS = 60
@@ -460,6 +459,9 @@ MAX_PLATAFORMAS = 20
 
 plataformas = gerar_plataformas(MAX_PLATAFORMAS)
 plataformas,plataformas_aux = construir_mapa(plataformas, LARGURA, TELA)
+PLAYER = (254,254,0)
+X_PLAYER = plataformas_aux[0][0] + 40
+Y_PLAYER = plataformas_aux[0][1] - 20
 rodar = True
 while rodar:
     
