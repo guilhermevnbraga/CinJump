@@ -66,18 +66,21 @@ class item:
         if self.mola:
             return pygame.draw.rect(TELA, cores_plataforma['cinza'], (self.X + 42.5, self.Y - 15, 15, 15))
         elif self.moeda == 1:
-            return pygame.draw.circle(TELA, cores_plataforma['dourado'], (self.X + 50, self.Y - 10), 10)
+            return pygame.draw.rect(TELA, cores_plataforma['dourado'], (self.X + 42.5, self.Y - 15, 15, 15))
         elif self.moeda == 2:
-            return pygame.draw.circle(TELA, cores_plataforma['ciano'], (self.X + 50, self.Y - 10), 10)
+            return pygame.draw.rect(TELA, cores_plataforma['ciano'], (self.X + 42.5, self.Y - 15, 15, 15))
         elif self.moeda == 3:
-            return pygame.draw.circle(TELA, cores_plataforma['roxo'], (self.X + 50, self.Y - 10), 10)
+            return pygame.draw.rect(TELA, cores_plataforma['roxo'], (self.X + 42.5, self.Y - 15, 15, 15))
     
     def mover_item(self, LARGURA):
         if self.velocida_condition:
             self.X += self.velocidade
             if self.X > LARGURA - self.L or self.X < 0:
                 self.velocidade *= -1
-
+    def sumir_item(self, player, item):
+        if item!= None and self.mola==False:
+            if player.colliderect(item):
+                return True
     def cor(self):
         return self.cor
 # FUNÇÕES
@@ -93,6 +96,7 @@ def construir_mapa(LISTA_PLATAFORMAS,LARGURA,TELA):
     plataformas =[]
     plataformas_aux = []
     itens = []
+    itens_aux = []
     P_Y = ALTURA -30
     for i,p in enumerate(LISTA_PLATAFORMAS):
         P_L = 100
@@ -106,9 +110,12 @@ def construir_mapa(LISTA_PLATAFORMAS,LARGURA,TELA):
         plataformas.append(plataform)
         plataformas_aux.append(plataform_cor)
         ite = item(P_X,P_Y,P_L, cor,i)
+        ite_aux = ite.desenho(TELA)
         itens.append(ite)
+        itens_aux.append(ite_aux)
+        print(itens_aux)
         P_Y -= 30 + randint(30, 150)
-    return plataformas, plataformas_aux, itens 
+    return plataformas, plataformas_aux, itens, itens_aux 
         
 
 # AREA DE TESTES RETIRAR QUANDO O CÓDIGO FOR FINALIZADO
@@ -123,7 +130,7 @@ clock = pygame.time.Clock()
 MAX_PLATAFORMAS = 20
 
 plataformas = gerar_plataformas(MAX_PLATAFORMAS)
-plataformas,plataformas_aux, itens = construir_mapa(plataformas, LARGURA, TELA)
+plataformas,plataformas_aux, itens, itens_aux = construir_mapa(plataformas, LARGURA, TELA)
 
 PLAYER = (254,254,0)
 X_PLAYER = plataformas_aux[0][0] + 40
@@ -152,11 +159,14 @@ while rodar:
     
     
     
-    for plataforma,plataforma_aux,item, i in zip(plataformas,plataformas_aux, itens,range(len(plataformas))):
+    for plataforma,plataforma_aux,item,item_aux, i in zip(plataformas,plataformas_aux, itens, itens_aux,range(len(plataformas))):
         if plataforma.get_cor() == cores_plataforma['vermelho']:
             if plataforma.sumir_vermelho(R_PLAYER, plataforma_aux):
                 plataformas_aux.pop(i)
                 plataformas.pop(i)
+        if item.sumir_item(R_PLAYER, item_aux):
+                itens_aux.pop(i)
+                itens.pop(i)        
         plataforma.mover_azul(LARGURA) 
         plataforma.desenhar(TELA)  
         item.desenho(TELA)
