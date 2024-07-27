@@ -432,10 +432,13 @@ def construir_mapa(LISTA_PLATAFORMAS,LARGURA,TELA):
     plataformas =[]
     plataformas_aux = []
     P_Y = ALTURA -30
-    for p in LISTA_PLATAFORMAS:
+    for i,p in enumerate(LISTA_PLATAFORMAS):
         P_L = 100
         P_X = randint(0, LARGURA-110)
-        cor = cores_plataforma[p]
+        if i == 0:
+            cor = cores_plataforma['verde']
+        else:
+            cor = cores_plataforma[p]
         plataform = plataforma(P_X,P_Y,P_L, cor)
         plataform_cor = plataform.desenhar(TELA)
         plataformas.append(plataform)
@@ -446,7 +449,6 @@ def construir_mapa(LISTA_PLATAFORMAS,LARGURA,TELA):
         
 
 # AREA DE TESTES RETIRAR QUANDO O CÓDIGO FOR FINALIZADO
-
 
 LARGURA = 600
 ALTURA = 800
@@ -459,6 +461,7 @@ MAX_PLATAFORMAS = 20
 
 plataformas = gerar_plataformas(MAX_PLATAFORMAS)
 plataformas,plataformas_aux = construir_mapa(plataformas, LARGURA, TELA)
+
 PLAYER = (254,254,0)
 X_PLAYER = plataformas_aux[0][0] + 40
 Y_PLAYER = plataformas_aux[0][1] - 20
