@@ -369,7 +369,7 @@ while rodar:
 pygame.quit()
 
 ################################################################################
-codigo guilherme atualizado
+#codigo guilherme atualizado
 import pygame
 from pygame.locals import *
 from random import *
@@ -379,30 +379,37 @@ from random import *
 cores_plataforma = {'verde': (0,255,0),
                     'vermelho': (255,0,0),
                     'azul': (0,0,255),
-                    'cores totais': ['verde', 'vermelho', 'azul']}
+                    'branco': (255,255,255),
+                    'cinza':(128,128,128),
+                    'amarelo':(255,215,0),
+                    'cores totais': ['verde', 'vermelho', 'azul', 'branco']}
 
 #CLASSE 
 
 class plataforma:
     
-    def __init__(self, X, Y, L, cor):
+    def __init__(self, X, Y, L, cor, i):
         self.X = X
         self.Y = Y
         self.L = L
         self.velocidade = randint(1,4)
         self.cor = cor
-        if cor == cores_plataforma['azul']: 
-            self.velocida_condition = True 
-        else:
-            self.velocida_condition = False
-        if cor == cores_plataforma['vermelho']:
-            self.vermelho = True
-        else:
-            self.vermelho = False
+        self.velocida_condition = True if cor == cores_plataforma['azul'] else False
+        self.vermelho =True if cor == cores_plataforma['vermelho'] else False
+        #parte do item
+        self.mola = True if cor == cores_plataforma['branco'] else False
+        item = randint(1, 100)
+        self.moeda =True if item < 50 and i !=0 else False
+        
 
     def desenhar(self,TELA):
         return pygame.draw.rect(TELA, self.cor, (self.X, self.Y, self.L, 20))
-        
+    #parte de colocar o item
+    def item(self,TELA):
+        if self.mola:
+            return pygame.draw.rect(TELA, cores_plataforma['cinza'], (self.X + 42.5, self.Y - 15, 15, 15))
+        elif self.moeda:
+            return pygame.draw.rect(TELA, cores_plataforma['amarelo'], (self.X + 42.5, self.Y - 15, 15, 15))
     def mover_azul(self, LARGURA):
         if self.velocida_condition:
             self.X += self.velocidade
@@ -413,7 +420,7 @@ class plataforma:
         if self.vermelho:
             if player.colliderect(plataforma):
                 return True
-
+    
     def get_cor(self):
         return self.cor
 
@@ -439,7 +446,7 @@ def construir_mapa(LISTA_PLATAFORMAS,LARGURA,TELA):
             cor = cores_plataforma['verde']
         else:
             cor = cores_plataforma[p]
-        plataform = plataforma(P_X,P_Y,P_L, cor)
+        plataform = plataforma(P_X,P_Y,P_L, cor,i)
         plataform_cor = plataform.desenhar(TELA)
         plataformas.append(plataform)
         plataformas_aux.append(plataform_cor)
@@ -496,6 +503,7 @@ while rodar:
                 plataformas.pop(i)
         plataforma.mover_azul(LARGURA) 
         plataforma.desenhar(TELA)  
+        plataforma.item(TELA)
 
     
     pygame.display.update()
