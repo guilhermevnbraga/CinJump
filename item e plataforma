@@ -26,13 +26,9 @@ class plataforma:
         self.cor = cor
         self.velocida_condition = True if cor == cores_plataforma['azul'] else False
         self.vermelho =True if cor == cores_plataforma['vermelho'] else False
-        
-        
 
     def desenhar(self,TELA):
         return pygame.draw.rect(TELA, self.cor, (self.X, self.Y, self.L, 20))
-    #parte de colocar o item
-    
 
     def mover_azul(self, LARGURA):
         if self.velocida_condition:
@@ -50,13 +46,10 @@ class plataforma:
     
 
 class item:
-    def __init__(self, X, Y, L, cor, i):
+    def __init__(self, X, Y, cor, i):
         self.X = X
         self.Y = Y
-        self.L = L
-        self.velocidade = 2
         self.cor = cor
-        #parte do item
         self.mola = True if cor == cores_plataforma['branco'] else False
         item = randint(1, 200)
         self.moeda =0 if item <= 100 and i !=0 else 1 if 100 < item <= 170 and i !=0 else 2 if 170 < item <= 190 and i !=0 else 3 if i!=0 else None
@@ -77,7 +70,7 @@ class item:
     
     def sumir_item(self, player, item):
         if player.colliderect(item):
-                return True
+            return True
     
     def get_cor(self):
         return self.cor
@@ -92,29 +85,23 @@ def gerar_plataformas(MAX_PLATAFORMAS):
     return PLATAFORMAS
 
 def construir_mapa(LISTA_PLATAFORMAS,LARGURA,TELA,ALTURA):
-    plataformas =[]
-    plataformas_aux = []
-    itens = []
-    itens_aux = []
+    dados = {'plataforma': [],'plataforma posicao':[],'itens':[],'itens posicao':[]}
     P_Y = ALTURA -30
     for i,p in enumerate(LISTA_PLATAFORMAS):
         P_L = 100
         P_X = randint(0, LARGURA-110)
-        if i == 0:
-            cor = cores_plataforma['verde']
-        else:
-            cor = cores_plataforma[p]
+        cor = cores_plataforma['verde'] if i == 0 else cores_plataforma[p]
         plataform = plataforma(P_X,P_Y,P_L, cor,i)
         plataform_cor = plataform.desenhar(TELA)
-        plataformas.append(plataform)
-        plataformas_aux.append(plataform_cor)
+        dados['plataforma'].append(plataform)
+        dados['plataforma posicao'].append(plataform_cor)
         if cor != cores_plataforma['azul']:
-            ite = item(P_X,P_Y,P_L, cor,i)
+            ite = item(P_X,P_Y, cor,i)
             ite_aux = ite.desenho(TELA)
-            itens.append(ite)
-            itens_aux.append(ite_aux)
+            dados['itens'].append(ite)
+            dados['itens posicao'].append(ite_aux)
         P_Y -= 30 + randint(30, 150)
-    return plataformas, plataformas_aux, itens, itens_aux 
+    return dados
         
 def update_mapa(plataformas, plataformas_aux, itens, itens_aux, R_PLAYER):
     
@@ -128,14 +115,8 @@ def update_mapa(plataformas, plataformas_aux, itens, itens_aux, R_PLAYER):
             if item.sumir_item(R_PLAYER, item_aux):
                 itens_aux.pop(i)
                 itens.pop(i) 
-                if item.get_cor() == cores_plataforma['dourado']:
-                    return 'moeda'
-                elif item.get_cor() == cores_plataforma['ciano']:
-                    return 'diamante'
-                elif item.get_cor() == cores_plataforma['roxo']:
-                    return 'vida'
-    return False
-
+                return 'moeda' if item.get_cor() == cores_plataforma['dourado'] else 'diamante' if item.get_cor() == cores_plataforma['ciano'] else 'vida' if item.get_cor() == cores_plataforma['roxo'] else False
+    return False        
 
 def render_mapa(plataformas, items, LARGURA, TELA):
 
@@ -144,13 +125,12 @@ def render_mapa(plataformas, items, LARGURA, TELA):
         plataforma.desenhar(TELA)
         itens.desenho(TELA)
     
-
-
 # AREA DE TESTES RETIRAR QUANDO O CÓDIGO FOR FINALIZADO
 
 moedas = 0
 vidas = 0
 diamantes = 0
+pontuacao = 0
 
 LARGURA = 600
 ALTURA = 800
@@ -163,21 +143,22 @@ clock = pygame.time.Clock()
 MAX_PLATAFORMAS = 20
 
 plataformas = gerar_plataformas(MAX_PLATAFORMAS)
-plataformas,plataformas_aux, itens, itens_aux = construir_mapa(plataformas, LARGURA, TELA, ALTURA)
+dados = construir_mapa(plataformas, LARGURA, TELA, ALTURA)
 
 PLAYER = (254,254,0)
-X_PLAYER = plataformas_aux[0][0] + 40
-Y_PLAYER = plataformas_aux[0][1] - 20
+X_PLAYER = dados['plataforma posicao'][0][0] + 40
+Y_PLAYER = dados['plataforma posicao'][0][1] - 20
 rodar = True
 while rodar:
     
     mensagem = f'Moedas: {moedas}'
     mensagem2 = f'Vidas: {vidas}'
     mensagem3 = f'Diamantes: {diamantes}'
+    mensagem4 = f'Pontuação TOTAL!!: {pontuacao}'
     mensagem_format = fonte.render(mensagem, True, (255,255,255))
     mensagem2_format = fonte.render(mensagem2, True, (255,255,255))
     mensagem3_format = fonte.render(mensagem3, True, (255,255,255))
-
+    mensagem4_format = fonte.render(mensagem4, True, (255,255,255))
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -187,31 +168,30 @@ while rodar:
     
     TELA.fill((0, 0, 0))    
     
-    if pygame.key.get_pressed()[K_a]:
-        X_PLAYER = X_PLAYER - 10
-    if pygame.key.get_pressed()[K_d]:
-        X_PLAYER = X_PLAYER + 10
-    if pygame.key.get_pressed()[K_w]:
-        Y_PLAYER = Y_PLAYER - 10
-    if pygame.key.get_pressed()[K_s]:
-        Y_PLAYER = Y_PLAYER + 10
+    X_PLAYER =X_PLAYER - 10 if pygame.key.get_pressed()[K_a] else X_PLAYER
+    X_PLAYER =X_PLAYER + 10 if pygame.key.get_pressed()[K_d] else X_PLAYER
+    Y_PLAYER =Y_PLAYER - 10 if pygame.key.get_pressed()[K_w] else Y_PLAYER
+    Y_PLAYER =Y_PLAYER + 10 if pygame.key.get_pressed()[K_s] else Y_PLAYER
+
     
     R_PLAYER = pygame.draw.rect(TELA, PLAYER, (X_PLAYER, Y_PLAYER, 20, 20))
 
-    coletou = update_mapa(plataformas, plataformas_aux, itens, itens_aux, R_PLAYER)
+    coletou = update_mapa(dados['plataforma'], dados['plataforma posicao'], dados['itens'], dados['itens posicao'], R_PLAYER)
     if coletou == 'moeda':
         moedas += 1
+        pontuacao +=5
     elif coletou == 'diamante':
         diamantes += 1
-    elif coletou == 'vida':
+        pontuacao+= 25
+    elif coletou == 'vida' and vidas<1:
         vidas += 1
     
-    render_mapa(plataformas, itens, LARGURA, TELA)
+    render_mapa(dados['plataforma'], dados['itens'], LARGURA, TELA)
     
     TELA.blit(mensagem_format, (10, 10))
     TELA.blit(mensagem2_format, (10, 30))
     TELA.blit(mensagem3_format, (10, 50))
-
+    TELA.blit(mensagem4_format, (10, 70))
     pygame.display.update()
     clock.tick(FPS)
 pygame.quit()
