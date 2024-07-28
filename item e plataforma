@@ -110,10 +110,9 @@ def construir_mapa(LISTA_PLATAFORMAS,LARGURA,TELA,ALTURA):
         plataformas_aux.append(plataform_cor)
         if cor != cores_plataforma['azul']:
             ite = item(P_X,P_Y,P_L, cor,i)
-        ite_aux = ite.desenho(TELA)
-        itens.append(ite)
-        itens_aux.append(ite_aux)
-        print(itens_aux)
+            ite_aux = ite.desenho(TELA)
+            itens.append(ite)
+            itens_aux.append(ite_aux)
         P_Y -= 30 + randint(30, 150)
     return plataformas, plataformas_aux, itens, itens_aux 
         
@@ -125,7 +124,7 @@ def update_mapa(plataformas, plataformas_aux, itens, itens_aux, R_PLAYER):
             plataformas.pop(i)
     
     for item, item_aux, i in zip(itens, itens_aux, range(len(itens_aux))):
-        if item.get_cor()!= cores_plataforma['cinza'] and item_aux != None:
+        if item.get_cor()!= cores_plataforma['cinza'] and item_aux is not None:
             if item.sumir_item(R_PLAYER, item_aux):
                 itens_aux.pop(i)
                 itens.pop(i) 
