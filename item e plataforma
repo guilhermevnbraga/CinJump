@@ -117,6 +117,35 @@ def construir_mapa(LISTA_PLATAFORMAS,LARGURA,TELA,ALTURA):
         P_Y -= 30 + randint(30, 150)
     return plataformas, plataformas_aux, itens, itens_aux 
         
+def update_mapa(plataformas, plataformas_aux, itens, itens_aux, R_PLAYER):
+    
+    for plataforma,plataforma_aux, i in zip(plataformas,plataformas_aux, range(len(plataformas_aux))):
+        if plataforma.get_cor() == cores_plataforma['vermelho'] and plataforma.sumir_vermelho(R_PLAYER, plataforma_aux):
+            plataformas_aux.pop(i)
+            plataformas.pop(i)
+    
+    for item, item_aux, i in zip(itens, itens_aux, range(len(itens_aux))):
+        if item.get_cor()!= cores_plataforma['cinza'] and item_aux != None:
+            if item.sumir_item(R_PLAYER, item_aux):
+                itens_aux.pop(i)
+                itens.pop(i) 
+                if item.get_cor() == cores_plataforma['dourado']:
+                    return 'moeda'
+                elif item.get_cor() == cores_plataforma['ciano']:
+                    return 'diamante'
+                elif item.get_cor() == cores_plataforma['roxo']:
+                    return 'vida'
+    return False
+
+
+def render_mapa(plataformas, items, LARGURA, TELA):
+
+    for plataforma,itens in zip(plataformas, items):
+        plataforma.mover_azul(LARGURA)
+        plataforma.desenhar(TELA)
+        itens.desenho(TELA)
+    
+
 
 # AREA DE TESTES RETIRAR QUANDO O CÓDIGO FOR FINALIZADO
 
@@ -169,32 +198,17 @@ while rodar:
         Y_PLAYER = Y_PLAYER + 10
     
     R_PLAYER = pygame.draw.rect(TELA, PLAYER, (X_PLAYER, Y_PLAYER, 20, 20))
-    
-    
-    
-    for plataforma,plataforma_aux, i in zip(plataformas,plataformas_aux, range(len(plataformas_aux))):
-        if plataforma.get_cor() == cores_plataforma['vermelho']:
-            if plataforma.sumir_vermelho(R_PLAYER, plataforma_aux):
-                plataformas_aux.pop(i)
-                plataformas.pop(i)
-        plataforma.mover_azul(LARGURA) 
-        plataforma.desenhar(TELA)      
-    
-    
-    for item, item_aux, i in zip(itens, itens_aux, range(len(itens_aux))):
-        if item.get_cor()!= cores_plataforma['cinza'] and item_aux != None:
-            if item.sumir_item(R_PLAYER, item_aux):
-                    itens_aux.pop(i)
-                    itens.pop(i) 
-                    if item.get_cor() == cores_plataforma['dourado']:
-                        moedas += 1
-                    elif item.get_cor() == cores_plataforma['ciano']:
-                        diamantes += 1
-                    elif item.get_cor() == cores_plataforma['roxo']:
-                        vidas += 1       
-        item.desenho(TELA)
-    
 
+    coletou = update_mapa(plataformas, plataformas_aux, itens, itens_aux, R_PLAYER)
+    if coletou == 'moeda':
+        moedas += 1
+    elif coletou == 'diamante':
+        diamantes += 1
+    elif coletou == 'vida':
+        vidas += 1
+    
+    render_mapa(plataformas, itens, LARGURA, TELA)
+    
     TELA.blit(mensagem_format, (10, 10))
     TELA.blit(mensagem2_format, (10, 30))
     TELA.blit(mensagem3_format, (10, 50))
