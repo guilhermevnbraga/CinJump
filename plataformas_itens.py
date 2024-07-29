@@ -172,6 +172,7 @@ def render_mapa(plataformas, items, LARGURA, TELA):
 
     return plataformas_aux
 
+
 # AREA DE TESTES RETIRAR QUANDO O CÓDIGO FOR FINALIZADO
 
 moedas = 0
@@ -222,7 +223,10 @@ while rodar:
 
     # Objeto de colisão com a parte inferior do player
     BOTTOM_RECT = pygame.Rect(
-        R_PLAYER.left, R_PLAYER.bottom - BOTTOM_HEIGHT + 1, R_PLAYER.width, BOTTOM_HEIGHT
+        R_PLAYER.left,
+        R_PLAYER.bottom - BOTTOM_HEIGHT + 1,
+        R_PLAYER.width,
+        BOTTOM_HEIGHT,
     )
 
     # Velocidade do player
@@ -272,7 +276,9 @@ while rodar:
     elif coletou == "vida" and vidas < 1:
         vidas += 1
 
-    dados['plataforma posicao'] = render_mapa(dados["plataforma"], dados["itens"], LARGURA, TELA)
+    dados["plataforma posicao"] = render_mapa(
+        dados["plataforma"], dados["itens"], LARGURA, TELA
+    )
 
     TELA.blit(mensagem_format, (10, 10))
     TELA.blit(mensagem2_format, (10, 30))
