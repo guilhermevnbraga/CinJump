@@ -56,7 +56,7 @@ def gerar_plataformas(MAX_PLATAFORMAS):
         PLATAFORMAS.append(plataforma_aleatoria)
     return PLATAFORMAS
 
-def construir_mapa(LISTA_PLATAFORMAS,LARGURA,TELA):
+def construir_mapa(LISTA_PLATAFORMAS, LARGURA,TELA):
     plataformas =[]
     plataformas_aux = []
     P_Y = ALTURA -30
@@ -88,6 +88,9 @@ def construir_mapa(LISTA_PLATAFORMAS,LARGURA,TELA):
 PLAYER = (254,254,0)
 X_PLAYER = 300
 Y_PLAYER = 750
+VELOCIDADE_PLAYER = -20
+BOTTOM_HEIGHT = 1
+GRAVIDADE = 1
 LARGURA = 600
 ALTURA = 800
 FPS = 60
@@ -98,7 +101,7 @@ clock = pygame.time.Clock()
 MAX_PLATAFORMAS = 20
 
 plataformas = gerar_plataformas(MAX_PLATAFORMAS)
-plataformas,plataformas_aux = construir_mapa(plataformas, LARGURA, TELA)
+plataformas, plataformas_aux = construir_mapa(plataformas, LARGURA, TELA)
 rodar = True
 while rodar:
     
@@ -108,23 +111,41 @@ while rodar:
     
     TELA.fill((0, 0, 0))    
     
-    if pygame.key.get_pressed()[K_a]:
-        X_PLAYER = X_PLAYER - 20
-    if pygame.key.get_pressed()[K_d]:
-        X_PLAYER = X_PLAYER + 20
-    if pygame.key.get_pressed()[K_w]:
-        Y_PLAYER = Y_PLAYER - 20
-    if pygame.key.get_pressed()[K_s]:
-        Y_PLAYER = Y_PLAYER + 20
-    
     R_PLAYER = pygame.draw.rect(TELA, PLAYER, (X_PLAYER, Y_PLAYER, 20, 20))
+
+    # Objeto de colisão com a parte inferior do player
+    BOTTOM_RECT = pygame.Rect(R_PLAYER.left, R_PLAYER.bottom - BOTTOM_HEIGHT, R_PLAYER.width, BOTTOM_HEIGHT)
+
+    # Velocidade do player
+    Y_PLAYER += VELOCIDADE_PLAYER
+
+    # Gravidade
+    if VELOCIDADE_PLAYER < 10:
+        VELOCIDADE_PLAYER += GRAVIDADE
+
+    # Fazer o player ir pro outro lado da tela
+    if (X_PLAYER >= LARGURA):
+        X_PLAYER = 0
+    elif (X_PLAYER <= 0):
+        X_PLAYER = LARGURA - 20
+
+    # Movimentação principal
+    if pygame.key.get_pressed()[K_a] or pygame.key.get_pressed()[K_LEFT]:
+        X_PLAYER = X_PLAYER - 20
+    if pygame.key.get_pressed()[K_d] or pygame.key.get_pressed()[K_RIGHT]:
+        X_PLAYER = X_PLAYER + 20
+    
+    # Colisão com as plataformas
+    if BOTTOM_RECT.collidelistall(plataformas_aux):
+        VELOCIDADE_PLAYER = -20
     
     
-    
-    for plataforma,i in zip(plataformas,range(len(plataformas))):
-        for platform,i_aux in zip(plataformas_aux,range(len(plataformas_aux))):
+    for plataforma, i in zip(plataformas, range(len(plataformas))):
+        for platform, i_aux in zip(plataformas_aux, range(len(plataformas_aux))):
             if plataforma.get_cor() == cores_plataforma['vermelho'] and i == i_aux:
-                if plataforma.sumir_vermelho(R_PLAYER, platform):
+                if plataforma.sumir_vermelho(BOTTOM_RECT, platform):
+                    print(plataforma.X, plataforma.Y)
+                    print(R_PLAYER.x, R_PLAYER.y)
                     plataformas_aux.pop(i_aux)
                     plataformas.pop(i)
         plataforma.mover_azul(LARGURA) 
