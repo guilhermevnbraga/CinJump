@@ -196,9 +196,9 @@ dados = construir_mapa(plataformas, LARGURA, TELA, ALTURA)
 PLAYER = (254, 254, 0)
 X_PLAYER = dados["plataforma posicao"][0][0] + 40
 Y_PLAYER = dados["plataforma posicao"][0][1] - 20
-VELOCIDADE_PLAYER = -30
+VELOCIDADE_PLAYER = -20
 BOTTOM_HEIGHT = 1
-GRAVIDADE = 1
+GRAVIDADE = 2
 rodar = True
 while rodar:
 
@@ -224,7 +224,7 @@ while rodar:
     # Objeto de colisão com a parte inferior do player
     BOTTOM_RECT = pygame.Rect(
         R_PLAYER.left,
-        R_PLAYER.bottom - BOTTOM_HEIGHT + 1,
+        R_PLAYER.bottom - BOTTOM_HEIGHT + 20,
         R_PLAYER.width,
         BOTTOM_HEIGHT,
     )
@@ -251,7 +251,7 @@ while rodar:
     if pygame.key.get_pressed()[K_d] or pygame.key.get_pressed()[K_RIGHT]:
         X_PLAYER = X_PLAYER + 20
     if pygame.key.get_pressed()[K_w] or pygame.key.get_pressed()[K_UP]:
-        VELOCIDADE_PLAYER = -30
+        VELOCIDADE_PLAYER = -20
 
     # Colisão com as plataformas
     if (
