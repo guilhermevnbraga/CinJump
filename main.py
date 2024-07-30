@@ -1,6 +1,7 @@
 import pygame
 from pygame.locals import *
 from random import *
+import sys
 
 # O CODIGO DEVERÁ SOFRER ALTERAÇÕES APÓS DECIDIR OS SPRITES
 
@@ -46,6 +47,8 @@ class plataforma:
 
     def get_cor(self):
         return self.cor
+    
+    
 
 
 class item:
@@ -172,14 +175,55 @@ def render_mapa(plataformas, items, LARGURA, TELA):
 
     return plataformas_aux
 
+class Button():
+	def __init__(self, image, x_pos, y_pos):
+		self.image = image #imagem do botao
+		self.x_pos = x_pos
+		self.y_pos = y_pos
+		self.rect = self.image.get_rect(center=(self.x_pos, self.y_pos))
+
+	def update(self): #blit poe uma imagem na tela
+		TELA.blit(self.image, self.rect) #usa a posicao do rect para por a image na tela
+
+	def clique(self, posicao): #confere se a posicao do mouse = posicao do botao
+		if posicao[0] in range(self.rect.left, self.rect.right) and posicao[1] in range(self.rect.top, self.rect.bottom):
+			return True
+		else:
+			return False
+			#position0= x // position1= y
+
+def menu():
+	while True:
+		jogar = pygame.image.load("main/jogar.png")
+		jogar = pygame.transform.scale(jogar, (100, 60))
+		botao_jogar= Button(jogar, 400, 500)
+		
+		sair = pygame.image.load("main/sair.png")
+		sair = pygame.transform.scale(sair, (100, 60))
+		botao_sair= Button(sair, 200, 200)
+
+		for evento in pygame.event.get():
+			if evento.type == pygame.QUIT:
+				pygame.quit()
+				sys.exit()
+			if evento.type == pygame.MOUSEBUTTONDOWN:
+				verifica_jogar= botao_jogar.clique(pygame.mouse.get_pos())
+				verifica_sair= botao_sair.clique(pygame.mouse.get_pos())
+				if verifica_sair== True:
+					pygame.quit()
+					sys.exit()
+				if verifica_jogar== True:
+					main()
+					
+
+		TELA.fill("black")
+
+		botao_jogar.update()
+		botao_sair.update()
+		pygame.display.update()
+
 
 # AREA DE TESTES RETIRAR QUANDO O CÓDIGO FOR FINALIZADO
-
-moedas = 0
-vidas = 0
-diamantes = 0
-pontuacao = 0
-
 LARGURA = 600
 ALTURA = 800
 FPS = 60
@@ -188,102 +232,110 @@ fonte = pygame.font.SysFont("arial", 20, True, True)
 TELA = pygame.display.set_mode((LARGURA, ALTURA))
 clock = pygame.time.Clock()
 
-MAX_PLATAFORMAS = 20
+def main():
+    moedas = 0
+    vidas = 0
+    diamantes = 0
+    pontuacao = 0
 
-plataformas = gerar_plataformas(MAX_PLATAFORMAS)
-dados = construir_mapa(plataformas, LARGURA, TELA, ALTURA)
+    MAX_PLATAFORMAS = 20
 
-PLAYER = (254, 254, 0)
-X_PLAYER = dados["plataforma posicao"][0][0] + 40
-Y_PLAYER = dados["plataforma posicao"][0][1] - 20
-VELOCIDADE_PLAYER = -20
-BOTTOM_HEIGHT = 1
-GRAVIDADE = 2
-rodar = True
-while rodar:
+    plataformas = gerar_plataformas(MAX_PLATAFORMAS)
+    dados = construir_mapa(plataformas, LARGURA, TELA, ALTURA)
 
-    mensagem = f"Moedas: {moedas}"
-    mensagem2 = f"Vidas: {vidas}"
-    mensagem3 = f"Diamantes: {diamantes}"
-    mensagem4 = f"Pontuação TOTAL!!: {pontuacao}"
-    mensagem_format = fonte.render(mensagem, True, (255, 255, 255))
-    mensagem2_format = fonte.render(mensagem2, True, (255, 255, 255))
-    mensagem3_format = fonte.render(mensagem3, True, (255, 255, 255))
-    mensagem4_format = fonte.render(mensagem4, True, (255, 255, 255))
+    PLAYER = (254, 254, 0)
+    X_PLAYER = dados["plataforma posicao"][0][0] + 40
+    Y_PLAYER = dados["plataforma posicao"][0][1] - 20
+    VELOCIDADE_PLAYER = -20
+    BOTTOM_HEIGHT = 1
+    GRAVIDADE = 2
+    rodar = True
+    while rodar:
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            rodar = False
-        if pygame.key.get_pressed()[K_ESCAPE]:
-            rodar = False
+        mensagem = f"Moedas: {moedas}"
+        mensagem2 = f"Vidas: {vidas}"
+        mensagem3 = f"Diamantes: {diamantes}"
+        mensagem4 = f"Pontuação TOTAL!!: {pontuacao}"
+        mensagem_format = fonte.render(mensagem, True, (255, 255, 255))
+        mensagem2_format = fonte.render(mensagem2, True, (255, 255, 255))
+        mensagem3_format = fonte.render(mensagem3, True, (255, 255, 255))
+        mensagem4_format = fonte.render(mensagem4, True, (255, 255, 255))
 
-    TELA.fill((0, 0, 0))
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                rodar = False
+            if pygame.key.get_pressed()[K_ESCAPE]:
+                rodar = False
 
-    R_PLAYER = pygame.draw.rect(TELA, PLAYER, (X_PLAYER, Y_PLAYER, 20, 20))
+        TELA.fill((0, 0, 0))
 
-    # Objeto de colisão com a parte inferior do player
-    BOTTOM_RECT = pygame.Rect(
-        R_PLAYER.left,
-        R_PLAYER.bottom - BOTTOM_HEIGHT + 20,
-        R_PLAYER.width,
-        BOTTOM_HEIGHT,
-    )
+        R_PLAYER = pygame.draw.rect(TELA, PLAYER, (X_PLAYER, Y_PLAYER, 20, 20))
 
-    # Velocidade do player
-    Y_PLAYER += VELOCIDADE_PLAYER
+        # Objeto de colisão com a parte inferior do player
+        BOTTOM_RECT = pygame.Rect(
+            R_PLAYER.left,
+            R_PLAYER.bottom - BOTTOM_HEIGHT + 20,
+            R_PLAYER.width,
+            BOTTOM_HEIGHT,
+        )
 
-    # Gravidade
-    if VELOCIDADE_PLAYER < 20:
-        VELOCIDADE_PLAYER += GRAVIDADE
+        # Velocidade do player
+        Y_PLAYER += VELOCIDADE_PLAYER
 
-    # Fazer o player ir pro outro lado da tela
-    if X_PLAYER >= LARGURA:
-        X_PLAYER = 0
-    elif X_PLAYER <= 0:
-        X_PLAYER = LARGURA - 20
+        # Gravidade
+        if VELOCIDADE_PLAYER < 20:
+            VELOCIDADE_PLAYER += GRAVIDADE
 
-    if Y_PLAYER >= ALTURA - 20:
-        Y_PLAYER = ALTURA - 20
+        # Fazer o player ir pro outro lado da tela
+        if X_PLAYER >= LARGURA:
+            X_PLAYER = 0
+        elif X_PLAYER <= 0:
+            X_PLAYER = LARGURA - 20
 
-    # Movimentação principal
-    if pygame.key.get_pressed()[K_a] or pygame.key.get_pressed()[K_LEFT]:
-        X_PLAYER = X_PLAYER - 20
-    if pygame.key.get_pressed()[K_d] or pygame.key.get_pressed()[K_RIGHT]:
-        X_PLAYER = X_PLAYER + 20
-    if pygame.key.get_pressed()[K_w] or pygame.key.get_pressed()[K_UP]:
-        VELOCIDADE_PLAYER = -20
+        if Y_PLAYER >= ALTURA - 20:
+            Y_PLAYER = ALTURA - 20
 
-    # Colisão com as plataformas
-    if (
-        BOTTOM_RECT.collidelistall(dados["plataforma posicao"])
-        and VELOCIDADE_PLAYER >= 0
-    ):
-        VELOCIDADE_PLAYER = -30
+        # Movimentação principal
+        if pygame.key.get_pressed()[K_a] or pygame.key.get_pressed()[K_LEFT]:
+            X_PLAYER = X_PLAYER - 20
+        if pygame.key.get_pressed()[K_d] or pygame.key.get_pressed()[K_RIGHT]:
+            X_PLAYER = X_PLAYER + 20
+        if pygame.key.get_pressed()[K_w] or pygame.key.get_pressed()[K_UP]:
+            VELOCIDADE_PLAYER = -20
 
-    coletou = update_mapa(
-        dados["plataforma"],
-        dados["plataforma posicao"],
-        dados["itens"],
-        dados["itens posicao"],
-        BOTTOM_RECT,
-    )
-    if coletou == "moeda":
-        moedas += 1
-        pontuacao += 5
-    elif coletou == "diamante":
-        diamantes += 1
-        pontuacao += 25
-    elif coletou == "vida" and vidas < 1:
-        vidas += 1
+        # Colisão com as plataformas
+        if (
+            BOTTOM_RECT.collidelistall(dados["plataforma posicao"])
+            and VELOCIDADE_PLAYER >= 0
+        ):
+            VELOCIDADE_PLAYER = -30
 
-    dados["plataforma posicao"] = render_mapa(
-        dados["plataforma"], dados["itens"], LARGURA, TELA
-    )
+        coletou = update_mapa(
+            dados["plataforma"],
+            dados["plataforma posicao"],
+            dados["itens"],
+            dados["itens posicao"],
+            BOTTOM_RECT,
+        )
+        if coletou == "moeda":
+            moedas += 1
+            pontuacao += 5
+        elif coletou == "diamante":
+            diamantes += 1
+            pontuacao += 25
+        elif coletou == "vida" and vidas < 1:
+            vidas += 1
 
-    TELA.blit(mensagem_format, (10, 10))
-    TELA.blit(mensagem2_format, (10, 30))
-    TELA.blit(mensagem3_format, (10, 50))
-    TELA.blit(mensagem4_format, (10, 70))
-    pygame.display.update()
-    clock.tick(FPS)
-pygame.quit()
+        dados["plataforma posicao"] = render_mapa(
+            dados["plataforma"], dados["itens"], LARGURA, TELA
+        )
+
+        TELA.blit(mensagem_format, (10, 10))
+        TELA.blit(mensagem2_format, (10, 30))
+        TELA.blit(mensagem3_format, (10, 50))
+        TELA.blit(mensagem4_format, (10, 70))
+        pygame.display.update()
+        clock.tick(FPS)
+    pygame.quit()
+
+menu()
