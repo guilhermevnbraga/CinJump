@@ -18,36 +18,38 @@ cores_plataforma = {
 
 # CLASSE
 
+
 class Jogador:
-    
-    def __init__(self,x, y):
+
+    def __init__(self, x, y):
         self.x = x
         self.y = y
         self.altura = 20
         self.tamanho = 20
         self.vel_y = 0
         self.rect = pygame.Rect(self.x, self.y, self.tamanho, self.altura)
-        self.cor = (254,254,0)
+        self.cor = (254, 254, 0)
         self.colidiu = False
-    
+
     def desenhar(self, TELA):
         pygame.draw.rect(TELA, self.cor, self.rect)
-    
+
     def movimentar(self, LARGURA, ALTURA, PLATAFORMAS):
         dx = 0
         dy = 0
-        
+
         key = pygame.key.get_pressed()
-        if key[pygame.K_a]:
+        if key[pygame.K_a] or key[pygame.K_LEFT]:
             dx -= 20
-        if key[pygame.K_d]:
+        if key[pygame.K_d] or key[pygame.K_RIGHT]:
             dx += 20
-        if key[pygame.K_w]:
+        if key[pygame.K_w] or key[pygame.K_UP]:
             dy -= 20
-        
-        self.vel_y += GRAVIDADE
+
+        if self.vel_y < 20:
+            self.vel_y += GRAVIDADE
         dy += self.vel_y
-    
+
         if self.rect.x + dx >= LARGURA:
             dx = -self.rect.x
         elif self.rect.x + dx <= 0:
@@ -57,22 +59,22 @@ class Jogador:
             self.vel_y = -20
 
         for plataformas in PLATAFORMAS:
-            if plataformas.rect.colliderect(self.rect.x, self.rect.y + dy, self.tamanho, self.altura):
+            if plataformas.rect.colliderect(
+                self.rect.x, self.rect.y + dy, self.tamanho, self.altura
+            ):
                 if self.rect.bottom < plataformas.rect.centery:
-                    if self.vel_y > 0:
+                    if self.vel_y >= 0:
                         self.rect.bottom = plataformas.rect.top
                         dy = 0
-                        self.vel_y -= 20
+                        self.vel_y = -20
                         self.colidiu = True
-                        if plataformas.get_cor == cores_plataforma['vermelho']:
+                        if plataformas.get_cor == cores_plataforma["vermelho"]:
                             self.colidiu = True
-                        else: 
+                        else:
                             self.colidiu = False
 
-                        
         self.rect.x += dx
         self.rect.y += dy
-        
 
 
 class plataforma:
@@ -127,24 +129,16 @@ class item:
     def desenho(self, TELA):
         if self.mola:
             self.cor = (128, 128, 128)
-            pygame.draw.rect(
-                TELA, cores_plataforma["cinza"], self.rect
-            )
+            pygame.draw.rect(TELA, cores_plataforma["cinza"], self.rect)
         elif self.moeda == 1:
             self.cor = (255, 215, 0)
-            pygame.draw.rect(
-                TELA, cores_plataforma["dourado"], self.rect
-            )
+            pygame.draw.rect(TELA, cores_plataforma["dourado"], self.rect)
         elif self.moeda == 2:
             self.cor = (0, 255, 255)
-            pygame.draw.rect(
-                TELA, cores_plataforma["ciano"], self.rect
-            )
+            pygame.draw.rect(TELA, cores_plataforma["ciano"], self.rect)
         elif self.moeda == 3:
             self.cor = (255, 0, 255)
-            pygame.draw.rect(
-                TELA, cores_plataforma["roxo"], self.rect
-            )
+            pygame.draw.rect(TELA, cores_plataforma["roxo"], self.rect)
 
     def sumir_item(self, player, item):
         if player.rect.colliderect(item):
@@ -185,9 +179,7 @@ def construir_mapa(LISTA_PLATAFORMAS, LARGURA, ALTURA):
 
 
 def update_mapa(plataformas, itens, R_PLAYER):
-    for plataforma, i in zip(
-        plataformas, range(len(plataformas))
-    ):
+    for plataforma, i in zip(plataformas, range(len(plataformas))):
         if plataforma.get_cor() == cores_plataforma[
             "vermelho"
         ] and plataforma.sumir_vermelho(R_PLAYER.colidiu):
@@ -221,7 +213,6 @@ def render_mapa(plataformas, items, LARGURA, TELA):
         plataforma.desenhar(TELA)
 
 
-
 # AREA DE TESTES RETIRAR QUANDO O CÓDIGO FOR FINALIZADO
 
 moedas = 0
@@ -231,7 +222,7 @@ pontuacao = 0
 
 LARGURA = 600
 ALTURA = 800
-FPS = 5
+FPS = 75
 pygame.init()
 fonte = pygame.font.SysFont("arial", 20, True, True)
 TELA = pygame.display.set_mode((LARGURA, ALTURA))
@@ -267,7 +258,7 @@ while rodar:
 
     TELA.fill((0, 0, 0))
 
-     # Colisão com as plataformas
+    # Colisão com as plataformas
 
     coletou = update_mapa(
         dados["plataforma"],
@@ -282,13 +273,11 @@ while rodar:
         pontuacao += 25
     elif coletou == "vida" and vidas < 1:
         vidas += 1
-    
+
     render_mapa(dados["plataforma"], dados["itens"], LARGURA, TELA)
 
-
     player.desenhar(TELA)
-    player.movimentar(LARGURA,ALTURA, dados['plataforma'])
-    
+    player.movimentar(LARGURA, ALTURA, dados["plataforma"])
 
     TELA.blit(mensagem_format, (10, 10))
     TELA.blit(mensagem2_format, (10, 30))
