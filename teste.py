@@ -35,46 +35,41 @@ class Jogador:
         pygame.draw.rect(TELA, self.cor, self.rect)
 
     def movimentar(self, LARGURA, ALTURA, PLATAFORMAS):
-        dx = 0
-        dy = 0
+        self.dx = 0
+        self.dy = 0
 
         key = pygame.key.get_pressed()
         if key[pygame.K_a] or key[pygame.K_LEFT]:
-            dx -= 20
+            self.dx -= 20
         if key[pygame.K_d] or key[pygame.K_RIGHT]:
-            dx += 20
+            self.dx += 20
         if key[pygame.K_w] or key[pygame.K_UP]:
-            dy -= 20
+            self.dy -= 20
 
         if self.vel_y < 20:
             self.vel_y += GRAVIDADE
-        dy += self.vel_y
+        self.dy += self.vel_y
 
-        if self.rect.x + dx >= LARGURA:
-            dx = -self.rect.x
-        elif self.rect.x + dx <= 0:
-            dx = LARGURA - 20
-        if self.rect.bottom + dy > ALTURA:
-            dy = 0
+        if self.rect.x + self.dx >= LARGURA:
+            self.dx = -self.rect.x
+        elif self.rect.x + self.dx <= 0:
+            self.dx = LARGURA - 20
+        if self.rect.bottom + self.dy > ALTURA:
+            self.dy = 0
             self.vel_y = -20
 
         for plataformas in PLATAFORMAS:
             if plataformas.rect.colliderect(
-                self.rect.x, self.rect.y + dy, self.tamanho, self.altura
+                self.rect.x, self.rect.y + self.dy, self.tamanho, self.altura
             ):
                 if self.rect.bottom < plataformas.rect.centery:
                     if self.vel_y >= 0:
                         self.rect.bottom = plataformas.rect.top
-                        dy = 0
+                        self.dy = 0
                         self.vel_y = -20
-                        self.colidiu = True
-                        if plataformas.get_cor == cores_plataforma["vermelho"]:
-                            self.colidiu = True
-                        else:
-                            self.colidiu = False
 
-        self.rect.x += dx
-        self.rect.y += dy
+        self.rect.x += self.dx
+        self.rect.y += self.dy
 
 
 class plataforma:
@@ -99,9 +94,9 @@ class plataforma:
             if self.X > LARGURA - self.L or self.X < 0:
                 self.velocidade *= -1
 
-    def sumir_vermelho(self, colidiu):
+    def sumir_vermelho(self,R_PLAYER):
         if self.vermelho:
-            if colidiu:
+            if R_PLAYER.rect.bottom == self.rect.top and R_PLAYER.vel_y < 0 and R_PLAYER.dy == 0:
                 return True
 
     def get_cor(self):
@@ -182,7 +177,7 @@ def update_mapa(plataformas, itens, R_PLAYER):
     for plataforma, i in zip(plataformas, range(len(plataformas))):
         if plataforma.get_cor() == cores_plataforma[
             "vermelho"
-        ] and plataforma.sumir_vermelho(R_PLAYER.colidiu):
+        ] and plataforma.sumir_vermelho(R_PLAYER):
             plataformas.pop(i)
 
     for item, i in zip(itens, range(len(itens))):
@@ -222,7 +217,7 @@ pontuacao = 0
 
 LARGURA = 600
 ALTURA = 800
-FPS = 75
+FPS = 60
 pygame.init()
 fonte = pygame.font.SysFont("arial", 20, True, True)
 TELA = pygame.display.set_mode((LARGURA, ALTURA))
