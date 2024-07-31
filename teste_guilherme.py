@@ -14,7 +14,6 @@ cores_plataforma = {
     "dourado": (255, 215, 0),
     "ciano": (0, 255, 255),
     "roxo": (255, 0, 255),
-    "especial": 'deeppink',
     "cores totais": ["verde", "vermelho", "azul","verde", "vermelho", "azul","verde", "vermelho", "azul","verde","verde","verde","verde", "branco"],
 }
 
@@ -70,10 +69,10 @@ class Jogador:
                     if self.vel_y >= 0:
                         self.rect.bottom = plataformas.rect.top
                         self.dy = 0
-                        self.vel_y = -25
+                        self.vel_y = -25                  
 
         for item in ITENS:
-            if (item.mola or item.especial) and item.rect.colliderect(self.rect.x, self.rect.y + self.dy, self.tamanho, self.altura):
+            if item.mola  and item.rect.colliderect(self.rect.x, self.rect.y + self.dy, self.tamanho, self.altura):
                 if self.rect.bottom < item.rect.centery:
                     if self.vel_y >= 0:
                         self.rect.bottom = item.rect.top
@@ -135,7 +134,6 @@ class Item:
         self.rect = pygame.Rect(self.X, self.Y, 15, 15)
         self.cor = cor
         self.mola = True if cor == cores_plataforma["branco"] else False
-        self.especial= True if i == 0.5 else False
         item = randint(1, 200)
         self.moeda = (
             0
@@ -148,11 +146,8 @@ class Item:
         )
 
     def desenho(self, TELA):
-        if self.especial:
-            self.cor = 'deeppink'
-            self.rect = pygame.Rect(self.X-85, self.Y, 100, 10)
-            pygame.draw.rect(TELA, cores_plataforma["especial"], self.rect)
-        elif self.mola:
+
+        if self.mola:
             self.cor = (128, 128, 128)
             pygame.draw.rect(TELA, cores_plataforma["cinza"], self.rect)
         elif self.moeda == 1:
@@ -217,7 +212,7 @@ def update_mapa(plataformas, itens, R_PLAYER):
             plataformas.pop(i)
 
     for item, i in zip(itens, range(len(itens))):
-        if item.get_cor() != cores_plataforma["cinza"] and item.get_cor() != cores_plataforma["especial"]  and item is not None:
+        if item.get_cor() != cores_plataforma["cinza"] and item is not None:
             if item.sumir_item(R_PLAYER, item):
                 itens.pop(i)
                 return (
@@ -279,8 +274,7 @@ VELOCIDADE_PLAYER = -20
 GRAVIDADE = 1
 rodar = True
 player = Jogador(X_PLAYER, Y_PLAYER)
-a = player.rect.top-200
-print(a)
+
 while rodar:
     
     mensagem = f"Moedas: {moedas}"
@@ -297,23 +291,22 @@ while rodar:
             rodar = False
         if pygame.key.get_pressed()[K_ESCAPE]:
             rodar = False
+    
+    TELA.fill((0, 0, 0))
+    
+
+    player.desenhar(TELA)
+    scrollar, pontuacao_somar = player.movimentar(LARGURA, ALTURA, dados["plataforma"],dados["itens"])
+    pontuacao += pontuacao_somar
+    pontuacao_somar = 0
+    
     if player.rect.top >= 750:
         if vidas == 1:
             vidas -= 1
-            plataforma_temp = Plataforma(player.rect.left, player.rect.top, 100, cores_plataforma['branco'])
-            item_temp = Item(plataforma_temp, cores_plataforma['verde'], 0.5)
-            dados["plataforma"].append(plataforma_temp)
-            dados["itens"].append(item_temp)
+            player.vel_y = -50
             
-            player.rect.bottom = plataforma_temp.rect.top
-            player.vel_y = -20
-            
-            scrollar, pontuacao_somar = player.movimentar(LARGURA, ALTURA, dados["plataforma"], dados["itens"])
-            pontuacao += pontuacao_somar
         else:
             rodar = False
-
-    TELA.fill((0, 0, 0))
 
     pygame.draw.line(TELA, (255,255,255), (0, scrollar_tamanho), (LARGURA, scrollar_tamanho), 1)
     # Colisão com as plataformas
@@ -334,11 +327,6 @@ while rodar:
 
     render_mapa(dados["plataforma"], dados["itens"], LARGURA, TELA,scrollar)
 
-    player.desenhar(TELA)
-    scrollar, pontuacao_somar = player.movimentar(LARGURA, ALTURA, dados["plataforma"],dados["itens"])
-    pontuacao += pontuacao_somar
-    pontuacao_somar = 0
-    print(player.rect.top)
     
     TELA.blit(mensagem_format, (10, 10))
     TELA.blit(mensagem2_format, (10, 30))
