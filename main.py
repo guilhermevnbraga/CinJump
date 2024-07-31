@@ -35,9 +35,11 @@ class Jogador:
     def desenhar(self, TELA):
         pygame.draw.rect(TELA, self.cor, self.rect)
 
-    def movimentar(self, LARGURA, ALTURA, PLATAFORMAS,GRAVIDADE):
+    def movimentar(self, LARGURA, ALTURA, PLATAFORMAS,GRAVIDADE, scrollar_tamanho):
+        self.scrollar = 0
         self.dx = 0
         self.dy = 0
+        pontuacao = 0
 
         key = pygame.key.get_pressed()
         if key[pygame.K_a] or key[pygame.K_LEFT]:
@@ -69,9 +71,14 @@ class Jogador:
                         self.dy = 0
                         self.vel_y = -20
 
-        self.rect.x += self.dx
-        self.rect.y += self.dy
+        if self.rect.top <= scrollar_tamanho and self.vel_y < 0:
+            self.scrollar -= self.dy 
+            pontuacao += self.scrollar if self.vel_y < 0 else 0
 
+        self.rect.x += self.dx
+        self.rect.y += self.dy + self.scrollar
+
+        return self.scrollar, pontuacao
 
 class plataforma:
 
@@ -103,6 +110,12 @@ class plataforma:
     def get_cor(self):
         return self.cor
 
+    def scrollar_tela(self, scrollar):
+        self.rect.y += scrollar
+        
+        if self.rect.y > ALTURA:
+            return True
+        return False
 
 class item:
     def __init__(self, X, Y, cor, i):
@@ -142,6 +155,31 @@ class item:
 
     def get_cor(self):
         return self.cor
+    
+    def scrollar_item(self, scrollar):
+        self.rect.y += scrollar
+
+        if self.rect.y > ALTURA:
+            return True
+        return False
+
+
+class Button():
+	def __init__(self, image, x_pos, y_pos):
+		self.image = image #imagem do botao
+		self.x_pos = x_pos
+		self.y_pos = y_pos
+		self.rect = self.image.get_rect(center=(self.x_pos, self.y_pos))
+
+	def update(self): #blit poe uma imagem na tela
+		TELA.blit(self.image, self.rect) #usa a posicao do rect para por a image na tela
+
+	def clique(self, posicao): #confere se a posicao do mouse = posicao do botao
+		if posicao[0] in range(self.rect.left, self.rect.right) and posicao[1] in range(self.rect.top, self.rect.bottom):
+			return True
+		else:
+			return False
+			#position0= x // position1= y
 
 
 # FUNÇÕES
@@ -201,29 +239,19 @@ def update_mapa(plataformas, itens, R_PLAYER):
     return False
 
 
-def render_mapa(plataformas, items, LARGURA, TELA):
+def render_mapa(plataformas, items, LARGURA, TELA,scrollar):
 
-    for plataforma, itens in zip(plataformas, items):
+    for plataforma, itens, i in zip(plataformas, items, range(len(plataformas))):
         plataforma.mover_azul(LARGURA)
         itens.desenho(TELA)
         plataforma.desenhar(TELA)
+        deletar = plataforma.scrollar_tela(scrollar)
+        deletar2 = itens.scrollar_item(scrollar)
+        if deletar:
+            plataformas.pop(i)
+        if deletar2:
+            items.pop(i)
 
-class Button():
-	def __init__(self, image, x_pos, y_pos):
-		self.image = image #imagem do botao
-		self.x_pos = x_pos
-		self.y_pos = y_pos
-		self.rect = self.image.get_rect(center=(self.x_pos, self.y_pos))
-
-	def update(self): #blit poe uma imagem na tela
-		TELA.blit(self.image, self.rect) #usa a posicao do rect para por a image na tela
-
-	def clique(self, posicao): #confere se a posicao do mouse = posicao do botao
-		if posicao[0] in range(self.rect.left, self.rect.right) and posicao[1] in range(self.rect.top, self.rect.bottom):
-			return True
-		else:
-			return False
-			#position0= x // position1= y
 
 def menu():
 	while True:
@@ -266,11 +294,13 @@ TELA = pygame.display.set_mode((LARGURA, ALTURA))
 clock = pygame.time.Clock()
 
 def main():
-
+    
     moedas = 0
     vidas = 0
     diamantes = 0
     pontuacao = 0
+    scrollar_tamanho = 100
+    scrollar = 0
 
     MAX_PLATAFORMAS = 20
 
@@ -317,10 +347,12 @@ def main():
         elif coletou == "vida" and vidas < 1:
             vidas += 1
 
-        render_mapa(dados["plataforma"], dados["itens"], LARGURA, TELA)
+        render_mapa(dados["plataforma"], dados["itens"], LARGURA, TELA, scrollar)
 
         player.desenhar(TELA)
-        player.movimentar(LARGURA, ALTURA, dados["plataforma"],GRAVIDADE)
+        scrollar, pontuacao_somar = player.movimentar(LARGURA, ALTURA, dados["plataforma"], GRAVIDADE, scrollar_tamanho)
+        pontuacao += pontuacao_somar
+        pontuacao_somar = 0
 
         TELA.blit(mensagem_format, (10, 10))
         TELA.blit(mensagem2_format, (10, 30))
@@ -328,7 +360,7 @@ def main():
         TELA.blit(mensagem4_format, (10, 70))
         pygame.display.update()
         clock.tick(FPS)
-        pygame.quit()
+    pygame.quit()
 
 
 menu()

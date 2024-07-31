@@ -35,8 +35,10 @@ class Jogador:
         pygame.draw.rect(TELA, self.cor, self.rect)
 
     def movimentar(self, LARGURA, ALTURA, PLATAFORMAS):
+        self.scrollar = 0
         self.dx = 0
         self.dy = 0
+        pontuacao = 0
 
         key = pygame.key.get_pressed()
         if key[pygame.K_a] or key[pygame.K_LEFT]:
@@ -68,8 +70,15 @@ class Jogador:
                         self.dy = 0
                         self.vel_y = -20
 
+        if self.rect.top <= scrollar_tamanho and self.vel_y < 0:
+            self.scrollar -= self.dy 
+            pontuacao += self.scrollar if self.vel_y < 0 else 0
+        
+        
         self.rect.x += self.dx
-        self.rect.y += self.dy
+        self.rect.y += self.dy + self.scrollar
+
+        return self.scrollar, pontuacao
 
 
 class plataforma:
@@ -101,6 +110,13 @@ class plataforma:
 
     def get_cor(self):
         return self.cor
+    
+    def scrollar_tela(self, scrollar):
+        self.rect.y += scrollar
+        
+        if self.rect.y > ALTURA:
+            return True
+        return False
 
 
 class item:
@@ -142,6 +158,12 @@ class item:
     def get_cor(self):
         return self.cor
 
+    def scrollar_item(self, scrollar):
+        self.rect.y += scrollar
+
+        if self.rect.y > ALTURA:
+            return True
+        return False
 
 # FUNÇÕES
 
@@ -200,12 +222,19 @@ def update_mapa(plataformas, itens, R_PLAYER):
     return False
 
 
-def render_mapa(plataformas, items, LARGURA, TELA):
+def render_mapa(plataformas, items, LARGURA, TELA,scrollar):
 
-    for plataforma, itens in zip(plataformas, items):
+    for plataforma, itens, i in zip(plataformas, items, range(len(plataformas))):
         plataforma.mover_azul(LARGURA)
         itens.desenho(TELA)
         plataforma.desenhar(TELA)
+        deletar = plataforma.scrollar_tela(scrollar)
+        deletar2 = itens.scrollar_item(scrollar)
+        if deletar:
+            plataformas.pop(i)
+        if deletar2:
+            items.pop(i)
+
 
 
 # AREA DE TESTES RETIRAR QUANDO O CÓDIGO FOR FINALIZADO
@@ -214,6 +243,8 @@ moedas = 0
 vidas = 0
 diamantes = 0
 pontuacao = 0
+scrollar_tamanho = 100
+scrollar = 0
 
 LARGURA = 600
 ALTURA = 800
@@ -253,6 +284,7 @@ while rodar:
 
     TELA.fill((0, 0, 0))
 
+    pygame.draw.line(TELA, (255,255,255), (0, scrollar_tamanho), (LARGURA, scrollar_tamanho), 1)
     # Colisão com as plataformas
 
     coletou = update_mapa(
@@ -269,10 +301,12 @@ while rodar:
     elif coletou == "vida" and vidas < 1:
         vidas += 1
 
-    render_mapa(dados["plataforma"], dados["itens"], LARGURA, TELA)
+    render_mapa(dados["plataforma"], dados["itens"], LARGURA, TELA,scrollar)
 
     player.desenhar(TELA)
-    player.movimentar(LARGURA, ALTURA, dados["plataforma"])
+    scrollar, pontuacao_somar = player.movimentar(LARGURA, ALTURA, dados["plataforma"])
+    pontuacao += pontuacao_somar
+    pontuacao_somar = 0
 
     TELA.blit(mensagem_format, (10, 10))
     TELA.blit(mensagem2_format, (10, 30))
