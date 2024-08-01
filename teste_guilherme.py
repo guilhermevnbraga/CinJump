@@ -14,7 +14,7 @@ cores_plataforma = {
     "dourado": (255, 215, 0),
     "ciano": (0, 255, 255),
     "roxo": (255, 0, 255),
-    "cores totais": ["verde", "vermelho", "azul","verde", "vermelho", "azul","verde", "vermelho", "azul","verde","verde","verde","verde", "branco"],
+    "cores totais": [(0, 255, 0), (255, 0, 0), (0, 0, 255),(0, 255, 0), (255, 0, 0), (0, 0, 255),(0, 255, 0), (255, 0, 0), (0, 0, 255),(0, 255, 0),(0, 255, 0),(0, 255, 0),(0, 255, 0), (255, 255, 255)],
 }
 
 # CLASSE
@@ -81,7 +81,7 @@ class Jogador:
 
         if self.rect.top <= scrollar_tamanho and self.vel_y < 0:
             self.scrollar -= self.dy 
-            pontuacao += self.scrollar if self.vel_y < 0 else 0
+            pontuacao += self.scrollar//2 if self.vel_y < 0 else 0
 
         self.rect.x += self.dx
         self.rect.y += self.dy + self.scrollar
@@ -128,20 +128,23 @@ class Plataforma:
 
 
 class Item:
-    def __init__(self, plataforma, cor, i):
+    def __init__(self, plataforma, cor):
         self.X = plataforma.X + plataforma.L / 2 - 7.5
         self.Y = plataforma.Y - 15
         self.rect = pygame.Rect(self.X, self.Y, 15, 15)
         self.cor = cor
+        if self.cor == cores_plataforma["azul"]:
+            item = 0
+        else:
+            item = randint(1, 200)
         self.mola = True if cor == cores_plataforma["branco"] else False
-        item = randint(1, 200)
         self.moeda = (
             0
-            if item <= 100 and i != 0
+            if item <= 100 
             else (
                 1
-                if 100 < item <= 170 and i != 0
-                else 2 if 170 < item <= 190 and i != 0 else 3 if i != 0 else None
+                if 100 < item <= 170 
+                else 2 if 170 < item <= 190  else 3 if item > 190 else None
             )
         )
 
@@ -177,31 +180,17 @@ class Item:
 # FUNÇÕES
 
 
-def gerar_plataformas(MAX_PLATAFORMAS):
-    PLATAFORMAS = []
-    for p in range(0, MAX_PLATAFORMAS):
-        plataforma_aleatoria = choice(cores_plataforma["cores totais"])
-        PLATAFORMAS.append(plataforma_aleatoria)
-    return PLATAFORMAS
-
-
-def construir_mapa(LISTA_PLATAFORMAS, LARGURA, ALTURA):
-    dados = {
-        "plataforma": [],
-        "itens": [],
-    }
-    P_Y = ALTURA - 60
-    for i, p in enumerate(LISTA_PLATAFORMAS):
+def construir_mapa(LARGURA, Y):
+    
+        P_Y = Y.rect.y - randint(100, 180)
         P_L = 100
         P_X = randint(0, LARGURA - 110)
-        cor = cores_plataforma["verde"] if i == 0 else cores_plataforma[p]
+        cor = choice(cores_plataforma['cores totais'])
         plataform = Plataforma(P_X, P_Y, P_L, cor)
-        dados["plataforma"].append(plataform)
-        if cor != cores_plataforma["azul"]:
-            ite = Item(plataform, cor, i)
-            dados["itens"].append(ite)
-        P_Y -= 30 + randint(30, 150)
-    return dados
+        ite = Item(plataform, cor)
+
+        return plataform, ite
+
 
 
 def update_mapa(plataformas, itens, R_PLAYER):
@@ -255,22 +244,25 @@ pontuacao = 0
 scrollar_tamanho = 200
 scrollar = 0
 
+
 LARGURA = 600
 ALTURA = 800
 FPS = 60
+plat_inicial = Plataforma(LARGURA/2 - 100, ALTURA - 100, 200, cores_plataforma['verde'])
 pygame.init()
 fonte = pygame.font.SysFont("arial", 20, True, True)
 TELA = pygame.display.set_mode((LARGURA, ALTURA))
 clock = pygame.time.Clock()
 
-MAX_PLATAFORMAS = 100
+MAX_PLATAFORMAS = 10000
 
-plataformas = gerar_plataformas(MAX_PLATAFORMAS)
-dados = construir_mapa(plataformas, LARGURA, ALTURA)
+dados = {
+    'plataforma': [plat_inicial],
+    'itens': []
+}
 
 X_PLAYER = dados["plataforma"][0].rect.left + 40
 Y_PLAYER = dados["plataforma"][0].rect.top - 20
-VELOCIDADE_PLAYER = -20
 GRAVIDADE = 1
 rodar = True
 player = Jogador(X_PLAYER, Y_PLAYER)
@@ -294,7 +286,6 @@ while rodar:
     
     TELA.fill((0, 0, 0))
     
-
     player.desenhar(TELA)
     scrollar, pontuacao_somar = player.movimentar(LARGURA, ALTURA, dados["plataforma"],dados["itens"])
     pontuacao += pontuacao_somar
@@ -309,7 +300,12 @@ while rodar:
             rodar = False
 
     pygame.draw.line(TELA, (255,255,255), (0, scrollar_tamanho), (LARGURA, scrollar_tamanho), 1)
-    # Colisão com as plataformas
+
+    if len(dados['plataforma']) < MAX_PLATAFORMAS:
+        plataforma, item = construir_mapa(LARGURA, dados["plataforma"][-1])
+        dados["plataforma"].append(plataforma)
+        dados["itens"].append(item)
+
 
     coletou = update_mapa(
         dados["plataforma"],
@@ -318,10 +314,10 @@ while rodar:
     )
     if coletou == "moeda":
         moedas += 1
-        pontuacao += 5
+        pontuacao += 100
     elif coletou == "diamante":
         diamantes += 1
-        pontuacao += 25
+        pontuacao += 500
     elif coletou == "vida" and vidas < 1:
         vidas += 1
 

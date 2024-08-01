@@ -14,7 +14,7 @@ cores_plataforma = {
     "dourado": (255, 215, 0),
     "ciano": (0, 255, 255),
     "roxo": (255, 0, 255),
-    "cores totais": ["verde", "vermelho", "azul", "branco"],
+    "cores totais": [(0, 255, 0), (255, 0, 0), (0, 0, 255),(0, 255, 0), (255, 0, 0), (0, 0, 255),(0, 255, 0), (255, 0, 0), (0, 0, 255),(0, 255, 0),(0, 255, 0),(0, 255, 0),(0, 255, 0), (255, 255, 255)],
 }
 
 # CLASSE
@@ -22,9 +22,11 @@ cores_plataforma = {
 
 class Jogador:
 
-    def __init__(self, x, y):
+    def __init__(self, x, y, GRAVIDADE, scrollar_tamanho):
         self.x = x
+        self.GRAVIDADE = GRAVIDADE
         self.y = y
+        self.scrollar_tamanho = scrollar_tamanho
         self.altura = 20
         self.tamanho = 20
         self.vel_y = 0
@@ -35,7 +37,7 @@ class Jogador:
     def desenhar(self, TELA):
         pygame.draw.rect(TELA, self.cor, self.rect)
 
-    def movimentar(self, LARGURA, ALTURA, PLATAFORMAS,GRAVIDADE, scrollar_tamanho):
+    def movimentar(self, LARGURA, ALTURA, PLATAFORMAS, ITENS):
         self.scrollar = 0
         self.dx = 0
         self.dy = 0
@@ -50,7 +52,7 @@ class Jogador:
             self.dy -= 20
 
         if self.vel_y < 20:
-            self.vel_y += GRAVIDADE
+            self.vel_y += self.GRAVIDADE
         self.dy += self.vel_y
 
         if self.rect.x + self.dx >= LARGURA:
@@ -69,18 +71,26 @@ class Jogador:
                     if self.vel_y >= 0:
                         self.rect.bottom = plataformas.rect.top
                         self.dy = 0
-                        self.vel_y = -20
+                        self.vel_y = -25                  
 
-        if self.rect.top <= scrollar_tamanho and self.vel_y < 0:
+        for item in ITENS:
+            if item.mola  and item.rect.colliderect(self.rect.x, self.rect.y + self.dy, self.tamanho, self.altura):
+                if self.rect.bottom < item.rect.centery:
+                    if self.vel_y >= 0:
+                        self.rect.bottom = item.rect.top
+                        self.dy = 0
+                        self.vel_y = -40
+
+        if self.rect.top <= self.scrollar_tamanho and self.vel_y < 0:
             self.scrollar -= self.dy 
-            pontuacao += self.scrollar if self.vel_y < 0 else 0
+            pontuacao += self.scrollar//2 if self.vel_y < 0 else 0
 
         self.rect.x += self.dx
         self.rect.y += self.dy + self.scrollar
-
+    
         return self.scrollar, pontuacao
 
-class plataforma:
+class Plataforma:
 
     def __init__(self, X, Y, L, cor):
         self.X = X
@@ -102,14 +112,14 @@ class plataforma:
             if self.X > LARGURA - self.L or self.X < 0:
                 self.velocidade *= -1
 
-    def sumir_vermelho(self,R_PLAYER):
+    def sumir_vermelho(self, R_PLAYER):
         if self.vermelho:
             if R_PLAYER.rect.bottom == self.rect.top and R_PLAYER.vel_y < 0 and R_PLAYER.dy == 0:
                 return True
 
     def get_cor(self):
         return self.cor
-
+    
     def scrollar_tela(self, scrollar):
         self.rect.y += scrollar
         
@@ -117,25 +127,29 @@ class plataforma:
             return True
         return False
 
-class item:
-    def __init__(self, X, Y, cor, i):
-        self.X = X
-        self.Y = Y
-        self.rect = pygame.Rect(self.X + 42.5, self.Y - 15, 15, 15)
+class Item:
+    def __init__(self, plataforma, cor):
+        self.X = plataforma.X + plataforma.L / 2 - 7.5
+        self.Y = plataforma.Y - 15
+        self.rect = pygame.Rect(self.X, self.Y, 15, 15)
         self.cor = cor
+        if self.cor == cores_plataforma["azul"]:
+            item = 0
+        else:
+            item = randint(1, 200)
         self.mola = True if cor == cores_plataforma["branco"] else False
-        item = randint(1, 200)
         self.moeda = (
             0
-            if item <= 100 and i != 0
+            if item <= 100 
             else (
                 1
-                if 100 < item <= 170 and i != 0
-                else 2 if 170 < item <= 190 and i != 0 else 3 if i != 0 else None
+                if 100 < item <= 170 
+                else 2 if 170 < item <= 190  else 3 if item > 190 else None
             )
         )
 
     def desenho(self, TELA):
+
         if self.mola:
             self.cor = (128, 128, 128)
             pygame.draw.rect(TELA, cores_plataforma["cinza"], self.rect)
@@ -155,7 +169,7 @@ class item:
 
     def get_cor(self):
         return self.cor
-    
+
     def scrollar_item(self, scrollar):
         self.rect.y += scrollar
 
@@ -185,31 +199,16 @@ class Button():
 # FUNÇÕES
 
 
-def gerar_plataformas(MAX_PLATAFORMAS):
-    PLATAFORMAS = []
-    for p in range(0, MAX_PLATAFORMAS):
-        plataforma_aleatoria = choice(cores_plataforma["cores totais"])
-        PLATAFORMAS.append(plataforma_aleatoria)
-    return PLATAFORMAS
-
-
-def construir_mapa(LISTA_PLATAFORMAS, LARGURA, ALTURA):
-    dados = {
-        "plataforma": [],
-        "itens": [],
-    }
-    P_Y = ALTURA - 30
-    for i, p in enumerate(LISTA_PLATAFORMAS):
+def construir_mapa(LARGURA, Y):
+    
+        P_Y = Y.rect.y - randint(100, 180)
         P_L = 100
         P_X = randint(0, LARGURA - 110)
-        cor = cores_plataforma["verde"] if i == 0 else cores_plataforma[p]
-        plataform = plataforma(P_X, P_Y, P_L, cor)
-        dados["plataforma"].append(plataform)
-        if cor != cores_plataforma["azul"]:
-            ite = item(P_X, P_Y, cor, i)
-            dados["itens"].append(ite)
-        P_Y -= 30 + randint(30, 150)
-    return dados
+        cor = choice(cores_plataforma['cores totais'])
+        plataform = Plataforma(P_X, P_Y, P_L, cor)
+        ite = Item(plataform, cor)
+
+        return plataform, ite
 
 
 def update_mapa(plataformas, itens, R_PLAYER):
@@ -295,25 +294,29 @@ clock = pygame.time.Clock()
 
 def main():
     
+    plat_inicial = Plataforma(LARGURA/2 - 100, ALTURA - 100, 200, cores_plataforma['verde'])
     moedas = 0
-    vidas = 0
+    vidas = 1
     diamantes = 0
     pontuacao = 0
     scrollar_tamanho = 100
     scrollar = 0
 
-    MAX_PLATAFORMAS = 20
+    MAX_PLATAFORMAS = 10000
 
-    plataformas = gerar_plataformas(MAX_PLATAFORMAS)
-    dados = construir_mapa(plataformas, LARGURA, ALTURA)
+    dados = {
+        'plataforma': [plat_inicial],
+        'itens': []
+    }
 
     X_PLAYER = dados["plataforma"][0].rect.left + 40
     Y_PLAYER = dados["plataforma"][0].rect.top - 20
     GRAVIDADE = 1
     rodar = True
-    player = Jogador(X_PLAYER, Y_PLAYER)
-    while rodar:
+    player = Jogador(X_PLAYER, Y_PLAYER,GRAVIDADE,scrollar_tamanho)
 
+    while rodar:
+        
         mensagem = f"Moedas: {moedas}"
         mensagem2 = f"Vidas: {vidas}"
         mensagem3 = f"Diamantes: {diamantes}"
@@ -328,10 +331,27 @@ def main():
                 rodar = False
             if pygame.key.get_pressed()[K_ESCAPE]:
                 rodar = False
-
+        
         TELA.fill((0, 0, 0))
+        
+        player.desenhar(TELA)
+        scrollar, pontuacao_somar = player.movimentar(LARGURA, ALTURA, dados["plataforma"],dados["itens"])
+        pontuacao += pontuacao_somar
+        pontuacao_somar = 0
+        
+        if player.rect.top >= 750:
+            if vidas >= 1:
+                vidas -= 1
+                player.vel_y = -50
+                
+            else:
+                rodar = False
 
-        # Colisão com as plataformas
+        if len(dados['plataforma']) < MAX_PLATAFORMAS:
+            plataforma, item = construir_mapa(LARGURA, dados["plataforma"][-1])
+            dados["plataforma"].append(plataforma)
+            dados["itens"].append(item)
+
 
         coletou = update_mapa(
             dados["plataforma"],
@@ -340,20 +360,16 @@ def main():
         )
         if coletou == "moeda":
             moedas += 1
-            pontuacao += 5
+            pontuacao += 100
         elif coletou == "diamante":
             diamantes += 1
-            pontuacao += 25
-        elif coletou == "vida" and vidas < 1:
+            pontuacao += 500
+        elif coletou == "vida" and vidas < 3:
             vidas += 1
 
-        render_mapa(dados["plataforma"], dados["itens"], LARGURA, TELA, scrollar)
+        render_mapa(dados["plataforma"], dados["itens"], LARGURA, TELA,scrollar)
 
-        player.desenhar(TELA)
-        scrollar, pontuacao_somar = player.movimentar(LARGURA, ALTURA, dados["plataforma"], GRAVIDADE, scrollar_tamanho)
-        pontuacao += pontuacao_somar
-        pontuacao_somar = 0
-
+        
         TELA.blit(mensagem_format, (10, 10))
         TELA.blit(mensagem2_format, (10, 30))
         TELA.blit(mensagem3_format, (10, 50))
