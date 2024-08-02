@@ -305,19 +305,16 @@ def main():
     pontuacao = 0
     scrollar_tamanho = 200
     scrollar = 0
-    MAX_PLATAFORMAS = 100
+    MAX_PLATAFORMAS = 20  # Número máximo de plataformas simultâneas
 
     plataformas = gerar_plataformas(MAX_PLATAFORMAS)
     dados = construir_mapa(plataformas, LARGURA, ALTURA)
 
     X_PLAYER = dados["plataforma"][0].rect.left + 40
     Y_PLAYER = dados["plataforma"][0].rect.top - 20
-    VELOCIDADE_PLAYER = -20
-    GRAVIDADE = 1
-    rodar = True
     player = Jogador(X_PLAYER, Y_PLAYER)
 
-    while rodar:
+    while True:
         mensagem = f"Moedas: {moedas}"
         mensagem2 = f"Vidas: {vidas}"
         mensagem3 = f"Diamantes: {diamantes}"
@@ -328,24 +325,48 @@ def main():
         mensagem4_format = fonte.render(mensagem4, True, (255, 255, 255))
 
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                rodar = False
-            if pygame.key.get_pressed()[K_ESCAPE]:
-                rodar = False
-        
+            if event.type == pygame.QUIT or pygame.key.get_pressed()[K_ESCAPE]:
+                pygame.quit()
+                sys.exit()
+
         TELA.fill((0, 0, 0))
         player.desenhar(TELA)
         scrollar, pontuacao_somar = player.movimentar(LARGURA, ALTURA, dados["plataforma"], dados["itens"])
         pontuacao -= pontuacao_somar
-        
+
         if player.rect.top >= 750:
             if vidas == 1:
                 vidas = 1
                 player.vel_y = -50
             else:
-                rodar = False
+                break
 
-        pygame.draw.line(TELA, (255,255,255), (0, scrollar_tamanho), (LARGURA, scrollar_tamanho), 1)
+        pygame.draw.line(TELA, (255, 255, 255), (0, scrollar_tamanho), (LARGURA, scrollar_tamanho), 1)
+
+        # Verifica e remove as plataformas que saem da tela
+        render_mapa(dados["plataforma"], dados["itens"], LARGURA, TELA, scrollar)
+
+        # Gera novas plataformas quando necessário
+        while len(dados["plataforma"]) < MAX_PLATAFORMAS:
+            nova_plataforma = choice(cores_plataforma["cores totais"])
+            ultima_plataforma = dados["plataforma"][-1]
+
+            # Posição X aleatória, mas dentro dos limites da tela
+            P_X = randint(0, LARGURA - 110)
+            
+            # A nova plataforma será gerada a uma distância controlada da última
+            P_Y = ultima_plataforma.rect.top - randint(100, 150)
+            P_L = 100
+
+            cor = cores_plataforma[nova_plataforma]
+            nova_plat = Plataforma(P_X, P_Y, P_L, cor)
+            dados["plataforma"].append(nova_plat)
+            
+            # Geração do item em cima da nova plataforma
+            if cor != cores_plataforma["azul"]:
+                novo_item = Item(nova_plat, cor, len(dados["plataforma"]))
+                dados["itens"].append(novo_item)
+
         coletou = update_mapa(dados["plataforma"], dados["itens"], player)
         if coletou == "moeda":
             moedas += 1
@@ -353,11 +374,9 @@ def main():
         elif coletou == "diamante":
             diamantes += 1
             pontuacao += 25
-        elif coletou == "vida" and vidas < 3:
+        elif coletou == "vida" and vidas < 1:
             vidas += 1
 
-        render_mapa(dados["plataforma"], dados["itens"], LARGURA, TELA, scrollar)
-        
         TELA.blit(mensagem_format, (10, 10))
         TELA.blit(mensagem2_format, (10, 30))
         TELA.blit(mensagem3_format, (10, 50))
@@ -366,4 +385,5 @@ def main():
         clock.tick(FPS)
 
     pygame.quit()
+
 menu()
