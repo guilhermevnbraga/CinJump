@@ -112,7 +112,7 @@ class Plataforma:
         if self.velocida_condition:
             self.X += self.velocidade
             self.rect.left = self.X
-            if self.X > LARGURA - 180 or self.X < 0:
+            if self.X > LARGURA - self.L or self.X < 0:
                 self.velocidade *= -1
 
     def sumir_vermelho(self, R_PLAYER):
@@ -210,7 +210,7 @@ def construir_mapa(LISTA_PLATAFORMAS, LARGURA, ALTURA):
     P_Y = ALTURA - 60
     for i, p in enumerate(LISTA_PLATAFORMAS):
         P_L = 100
-        P_X = randint(0, LARGURA - 180)
+        P_X = randint(0, LARGURA - 110)
         cor = cores_plataforma["verde"] if i == 0 else cores_plataforma[p]
         plataform = Plataforma(P_X, P_Y, P_L, cor)
         dados["plataforma"].append(plataform)
@@ -376,7 +376,7 @@ def main():
             ultima_plataforma = dados["plataforma"][-1]
 
             # Posição X aleatória, mas dentro dos limites da tela
-            P_X = randint(0, LARGURA - 180)
+            P_X = randint(0, LARGURA - 110)
             
             # A nova plataforma será gerada a uma distância controlada da última
             P_Y = ultima_plataforma.rect.top - randint(100, 150)
