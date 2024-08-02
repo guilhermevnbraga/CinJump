@@ -1,3 +1,10 @@
+#aqui tems as plataformas infinitas e os itens acompanham a plataforma o erro que achei é que se apertar W pro personagem dar aquele pulo as plataformas e os itens não ficam mais sincronizados
+#aqui eu também coloquei a dificuldade progressiva se quiser da para colocar mais, as a coisa que percebi é que se na lista de cores da plataforma não tiver pelo menos um vermelho um azul e um verde as plataformas bugam e os itens também 
+#o erro das plataformas nunca poderem ser da mesma cor a não ser que seja azul já que nesse caso não teriamos itens então sem problema dficulta um pouco da progressao de dificuldade 
+#o codigo em si acho que já esta bom a unica coisa a ver seria realmente a parte grafica de design
+
+
+
 import pygame
 from pygame.locals import *
 from random import *
@@ -12,7 +19,7 @@ cores_plataforma = {
     "dourado": (255, 215, 0),
     "ciano": (0, 255, 255),
     "roxo": (255, 0, 255),
-    "cores totais": ["verde", "vermelho", "azul","verde", "vermelho", "azul","verde", "vermelho", "azul","verde","verde","verde","verde", "branco"],
+    "cores totais": ["verde", "vermelho", "azul","verde", "vermelho", "azul","verde", "vermelho", "azul","azul","verde","verde","verde","azul","verde","azul","verde","verde","verde","verde","verde","branco"],
 }
 
 # Classe Jogador
@@ -105,7 +112,7 @@ class Plataforma:
         if self.velocida_condition:
             self.X += self.velocidade
             self.rect.left = self.X
-            if self.X > LARGURA - self.L or self.X < 0:
+            if self.X > LARGURA - 180 or self.X < 0:
                 self.velocidade *= -1
 
     def sumir_vermelho(self, R_PLAYER):
@@ -203,7 +210,7 @@ def construir_mapa(LISTA_PLATAFORMAS, LARGURA, ALTURA):
     P_Y = ALTURA - 60
     for i, p in enumerate(LISTA_PLATAFORMAS):
         P_L = 100
-        P_X = randint(0, LARGURA - 110)
+        P_X = randint(0, LARGURA - 180)
         cor = cores_plataforma["verde"] if i == 0 else cores_plataforma[p]
         plataform = Plataforma(P_X, P_Y, P_L, cor)
         dados["plataforma"].append(plataform)
@@ -238,6 +245,23 @@ def update_mapa(plataformas, itens, R_PLAYER):
                     )
                 )
     return False
+def atualizar_dificuldade(pontuacao):
+    if 10000 <= pontuacao < 15000 and cores_plataforma['cores totais'][0] != 'vermelho':
+        cores_plataforma['cores totais'][0] = 'vermelho'
+    elif 15000 <= pontuacao < 20000 and cores_plataforma['cores totais'][2] != 'vermelho':
+        cores_plataforma['cores totais'][2] = 'vermelho'
+    elif 20000 <= pontuacao < 25000 and cores_plataforma['cores totais'][3] != 'vermelho':
+        cores_plataforma['cores totais'][3] = 'vermelho'
+    elif 25000 <= pontuacao < 30000:
+        if cores_plataforma['cores totais'][5] != 'vermelho':
+            cores_plataforma['cores totais'][5] = 'vermelho'
+        if cores_plataforma['cores totais'][6] != 'vermelho':
+            cores_plataforma['cores totais'][6] = 'vermelho'
+    elif 30000 <= pontuacao < 40000 and cores_plataforma['cores totais'][11] != 'vermelho':
+        cores_plataforma['cores totais'][11] = 'vermelho'
+    elif pontuacao >= 40000 and cores_plataforma['cores totais'][0] != ['vermelho']:
+        cores_plataforma['cores totais'] = ['vermelho',"azul", 'vermelho', 'azul',"azul", 'vermelho', 'vermelho', 'vermelho',"verde", 'vermelho', 'azul', 'vermelho', 'azul', ]
+
 
 def render_mapa(plataformas, items, LARGURA, TELA, scrollar):
     # Itera de trás para frente para evitar problemas ao remover itens
@@ -352,7 +376,7 @@ def main():
             ultima_plataforma = dados["plataforma"][-1]
 
             # Posição X aleatória, mas dentro dos limites da tela
-            P_X = randint(0, LARGURA - 110)
+            P_X = randint(0, LARGURA - 180)
             
             # A nova plataforma será gerada a uma distância controlada da última
             P_Y = ultima_plataforma.rect.top - randint(100, 150)
@@ -366,6 +390,10 @@ def main():
             if cor != cores_plataforma["azul"]:
                 novo_item = Item(nova_plat, cor, len(dados["plataforma"]))
                 dados["itens"].append(novo_item)
+        
+        atualizar_dificuldade(pontuacao)
+      
+
 
         coletou = update_mapa(dados["plataforma"], dados["itens"], player)
         if coletou == "moeda":
