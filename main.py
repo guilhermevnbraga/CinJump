@@ -128,7 +128,7 @@ class Plataforma:
         return False
 
 class Item:
-    def __init__(self, plataforma, cor):
+    def __init__(self, plataforma, cor,pontuacao):
         self.X = plataforma.X + plataforma.L / 2 - 7.5
         self.Y = plataforma.Y - 15
         self.rect = pygame.Rect(self.X, self.Y, 15, 15)
@@ -144,7 +144,7 @@ class Item:
             else (
                 1
                 if 100 < item <= 170 
-                else 2 if 170 < item <= 190  else 3 if item > 190 else None
+                else 2 if 170 < item <= 190  else 3 if item > 190 and pontuacao < 13000 else None
             )
         )
 
@@ -199,14 +199,14 @@ class Button():
 # FUNÇÕES
 
 
-def construir_mapa(LARGURA, Y):
+def construir_mapa(LARGURA, Y, espaçamento,pontuacao):
     
-        P_Y = Y.rect.y - randint(100, 180)
+        P_Y = Y.rect.y - randint(espaçamento[0], espaçamento[1])
         P_L = 100
         P_X = randint(0, LARGURA - 110)
         cor = choice(cores_plataforma['cores totais'])
         plataform = Plataforma(P_X, P_Y, P_L, cor)
-        ite = Item(plataform, cor)
+        ite = Item(plataform, cor, pontuacao)
 
         return plataform, ite
 
@@ -301,8 +301,9 @@ def main():
     pontuacao = 0
     scrollar_tamanho = 100
     scrollar = 0
+    espaçamento = [100,180]
 
-    MAX_PLATAFORMAS = 10000
+    MAX_PLATAFORMAS = 20
 
     dados = {
         'plataforma': [plat_inicial],
@@ -348,7 +349,7 @@ def main():
                 rodar = False
 
         if len(dados['plataforma']) < MAX_PLATAFORMAS:
-            plataforma, item = construir_mapa(LARGURA, dados["plataforma"][-1])
+            plataforma, item = construir_mapa(LARGURA, dados["plataforma"][-1], espaçamento,pontuacao)
             dados["plataforma"].append(plataforma)
             dados["itens"].append(item)
 
@@ -369,6 +370,29 @@ def main():
 
         render_mapa(dados["plataforma"], dados["itens"], LARGURA, TELA,scrollar)
 
+        if pontuacao >= 10000 and cores_plataforma['cores totais'][0] == (0,255,0):
+            cores_plataforma['cores totais'][0] = (255, 0, 0)
+        
+        if pontuacao >= 13000 and cores_plataforma['cores totais'][3] == (0,255,0):
+            espaçamento = [140, 180]
+            cores_plataforma['cores totais'][3] = (255, 0, 0)
+        
+        if pontuacao >= 16050 and cores_plataforma['cores totais'][9] == (0,255,0):
+            espaçamento = [150, 180]
+            cores_plataforma['cores totais'][9] = (255, 0, 0)
+        
+        if pontuacao >= 20000 and cores_plataforma['cores totais'][10] == (0,255,0):
+            espaçamento = [160, 180]
+            cores_plataforma["cores totais"][10] = (255,0,0) 
+        
+        if pontuacao >= 24000 and cores_plataforma['cores totais'][11] == (0,255,0):
+            espaçamento = [170, 180]
+            cores_plataforma["cores totais"][11] = (255,0,0) 
+        
+        if pontuacao >= 27500 and cores_plataforma['cores totais'][12] == (0,255,0):
+             cores_plataforma['cores totais'][12] = (255,0,0)
+        
+            
         
         TELA.blit(mensagem_format, (10, 10))
         TELA.blit(mensagem2_format, (10, 30))
