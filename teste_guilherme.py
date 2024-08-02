@@ -1,7 +1,7 @@
 import pygame
 from pygame.locals import *
 from random import *
-
+import sys
 # Definindo as cores de plataforma
 cores_plataforma = {
     "verde": (0, 255, 0),
@@ -36,7 +36,8 @@ class Jogador:
         self.dx = 0
         self.dy = 0  # Inicializa dy aqui
         pontuacao = 0
-
+        self.GRAVIDADE = 1
+        self.scrollar_tamanho = 200
         key = pygame.key.get_pressed()
         if key[pygame.K_a] or key[pygame.K_LEFT]:
             self.dx -= 20
@@ -46,7 +47,7 @@ class Jogador:
             self.dy -= 20
 
         if self.vel_y < 20:
-            self.vel_y += GRAVIDADE
+            self.vel_y += self.GRAVIDADE
         self.dy += self.vel_y
 
         # Lógica de movimentação lateral
@@ -77,7 +78,7 @@ class Jogador:
                         self.dy = 0
                         self.vel_y = -40
 
-        if self.rect.top <= scrollar_tamanho and self.vel_y < 0:
+        if self.rect.top <= self.scrollar_tamanho and self.vel_y < 0:
             self.scrollar = -self.dy 
             pontuacao = -self.scrollar
 
@@ -169,7 +170,22 @@ class Item:
         if self.rect.y > ALTURA:
             return True
         return False
+class Button():
+	def __init__(self, image, x_pos, y_pos):
+		self.image = image #imagem do botao
+		self.x_pos = x_pos
+		self.y_pos = y_pos
+		self.rect = self.image.get_rect(center=(self.x_pos, self.y_pos))
 
+	def update(self): #blit poe uma imagem na tela
+		TELA.blit(self.image, self.rect) #usa a posicao do rect para por a image na tela
+
+	def clique(self, posicao): #confere se a posicao do mouse = posicao do botao
+		if posicao[0] in range(self.rect.left, self.rect.right) and posicao[1] in range(self.rect.top, self.rect.bottom):
+			return True
+		else:
+			return False
+			#position0= x // position1= y
 # Funções
 
 def gerar_plataformas(MAX_PLATAFORMAS):
@@ -244,14 +260,36 @@ def render_mapa(plataformas, items, LARGURA, TELA, scrollar):
             plataformas.pop(i)
         else:
             plataforma.desenhar(TELA)
+def menu():
+	while True:
+		jogar = pygame.image.load("jogar.png")
+		jogar = pygame.transform.scale(jogar, (100, 60))
+		botao_jogar= Button(jogar, 400, 500)
+		
+		sair = pygame.image.load("sair.png")
+		sair = pygame.transform.scale(sair, (100, 60))
+		botao_sair= Button(sair, 200, 200)
 
+		for evento in pygame.event.get():
+			if evento.type == pygame.QUIT:
+				pygame.quit()
+				sys.exit()
+			if evento.type == pygame.MOUSEBUTTONDOWN:
+				verifica_jogar= botao_jogar.clique(pygame.mouse.get_pos())
+				verifica_sair= botao_sair.clique(pygame.mouse.get_pos())
+				if verifica_sair== True:
+					pygame.quit()
+					sys.exit()
+				if verifica_jogar== True:
+					main()
+					
+
+		TELA.fill("black")
+
+		botao_jogar.update()
+		botao_sair.update()
+		pygame.display.update()
 # Area de testes
-moedas = 0
-vidas = 1
-diamantes = 0
-pontuacao = 0
-scrollar_tamanho = 200
-scrollar = 0
 
 LARGURA = 600
 ALTURA = 800
@@ -260,65 +298,72 @@ pygame.init()
 fonte = pygame.font.SysFont("arial", 20, True, True)
 TELA = pygame.display.set_mode((LARGURA, ALTURA))
 clock = pygame.time.Clock()
+def main():
+    moedas = 0
+    vidas = 1
+    diamantes = 0
+    pontuacao = 0
+    scrollar_tamanho = 200
+    scrollar = 0
+    MAX_PLATAFORMAS = 100
 
-MAX_PLATAFORMAS = 10
+    plataformas = gerar_plataformas(MAX_PLATAFORMAS)
+    dados = construir_mapa(plataformas, LARGURA, ALTURA)
 
-plataformas = gerar_plataformas(MAX_PLATAFORMAS)
-dados = construir_mapa(plataformas, LARGURA, ALTURA)
+    X_PLAYER = dados["plataforma"][0].rect.left + 40
+    Y_PLAYER = dados["plataforma"][0].rect.top - 20
+    VELOCIDADE_PLAYER = -20
+    GRAVIDADE = 1
+    rodar = True
+    player = Jogador(X_PLAYER, Y_PLAYER)
 
-X_PLAYER = dados["plataforma"][0].rect.left + 40
-Y_PLAYER = dados["plataforma"][0].rect.top - 20
-VELOCIDADE_PLAYER = -20
-GRAVIDADE = 1
-rodar = True
-player = Jogador(X_PLAYER, Y_PLAYER)
+    while rodar:
+        mensagem = f"Moedas: {moedas}"
+        mensagem2 = f"Vidas: {vidas}"
+        mensagem3 = f"Diamantes: {diamantes}"
+        mensagem4 = f"Pontuação TOTAL!!: {pontuacao}"
+        mensagem_format = fonte.render(mensagem, True, (255, 255, 255))
+        mensagem2_format = fonte.render(mensagem2, True, (255, 255, 255))
+        mensagem3_format = fonte.render(mensagem3, True, (255, 255, 255))
+        mensagem4_format = fonte.render(mensagem4, True, (255, 255, 255))
 
-while rodar:
-    mensagem = f"Moedas: {moedas}"
-    mensagem2 = f"Vidas: {vidas}"
-    mensagem3 = f"Diamantes: {diamantes}"
-    mensagem4 = f"Pontuação TOTAL!!: {pontuacao}"
-    mensagem_format = fonte.render(mensagem, True, (255, 255, 255))
-    mensagem2_format = fonte.render(mensagem2, True, (255, 255, 255))
-    mensagem3_format = fonte.render(mensagem3, True, (255, 255, 255))
-    mensagem4_format = fonte.render(mensagem4, True, (255, 255, 255))
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                rodar = False
+            if pygame.key.get_pressed()[K_ESCAPE]:
+                rodar = False
+        
+        TELA.fill((0, 0, 0))
+        player.desenhar(TELA)
+        scrollar, pontuacao_somar = player.movimentar(LARGURA, ALTURA, dados["plataforma"], dados["itens"])
+        pontuacao -= pontuacao_somar
+        
+        if player.rect.top >= 750:
+            if vidas == 1:
+                vidas = 1
+                player.vel_y = -50
+            else:
+                rodar = False
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            rodar = False
-        if pygame.key.get_pressed()[K_ESCAPE]:
-            rodar = False
-    
-    TELA.fill((0, 0, 0))
-    player.desenhar(TELA)
-    scrollar, pontuacao_somar = player.movimentar(LARGURA, ALTURA, dados["plataforma"], dados["itens"])
-    pontuacao += pontuacao_somar
-    
-    if player.rect.top >= 750:
-        if vidas == 1:
-            vidas -= 1
-            player.vel_y = -50
-        else:
-            rodar = False
+        pygame.draw.line(TELA, (255,255,255), (0, scrollar_tamanho), (LARGURA, scrollar_tamanho), 1)
+        coletou = update_mapa(dados["plataforma"], dados["itens"], player)
+        if coletou == "moeda":
+            moedas += 1
+            pontuacao += 5
+        elif coletou == "diamante":
+            diamantes += 1
+            pontuacao += 25
+        elif coletou == "vida" and vidas < 3:
+            vidas += 1
 
-    pygame.draw.line(TELA, (255,255,255), (0, scrollar_tamanho), (LARGURA, scrollar_tamanho), 1)
-    coletou = update_mapa(dados["plataforma"], dados["itens"], player)
-    if coletou == "moeda":
-        moedas += 1
-        pontuacao += 5
-    elif coletou == "diamante":
-        diamantes += 1
-        pontuacao += 25
-    elif coletou == "vida" and vidas < 3:
-        vidas += 1
+        render_mapa(dados["plataforma"], dados["itens"], LARGURA, TELA, scrollar)
+        
+        TELA.blit(mensagem_format, (10, 10))
+        TELA.blit(mensagem2_format, (10, 30))
+        TELA.blit(mensagem3_format, (10, 50))
+        TELA.blit(mensagem4_format, (10, 70))
+        pygame.display.update()
+        clock.tick(FPS)
 
-    render_mapa(dados["plataforma"], dados["itens"], LARGURA, TELA, scrollar)
-    
-    TELA.blit(mensagem_format, (10, 10))
-    TELA.blit(mensagem2_format, (10, 30))
-    TELA.blit(mensagem3_format, (10, 50))
-    TELA.blit(mensagem4_format, (10, 70))
-    pygame.display.update()
-    clock.tick(FPS)
-
-pygame.quit()
+    pygame.quit()
+menu()
