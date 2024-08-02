@@ -324,7 +324,7 @@ TELA = pygame.display.set_mode((LARGURA, ALTURA))
 clock = pygame.time.Clock()
 def main():
     moedas = 0
-    vidas = 1
+    vidas = 0
     diamantes = 0
     pontuacao = 0
     scrollar_tamanho = 200
@@ -360,7 +360,7 @@ def main():
 
         if player.rect.top >= 750:
             if vidas == 1:
-                vidas = 1
+                vidas -=1
                 player.vel_y = -50
             else:
                 break
