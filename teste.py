@@ -18,7 +18,7 @@ cores_plataforma = {
 }
 
 # IMAGENS
-stefan= pygame.image.load('stefanvvvv.png')
+stefan= pygame.image.load('stefan.png')
 
 # EFEITOS SONOROS
 pygame.mixer.init()
@@ -27,10 +27,9 @@ som_diamante= pygame.mixer.Sound('diamante.ogg')
 som_vida= pygame.mixer.Sound('vida.flac')
 som_mola= pygame.mixer.Sound('mola.flac')
 som_pulo= pygame.mixer.Sound('pulo.wav')
+perdervida= pygame.mixer.Sound('perdervida.mp3')
 
 # MUSICA
-pygame.mixer.music.load('musica_fundo.wav')
-pygame.mixer.music.play(-1)
 
 # CLASSE
 class Jogador():
@@ -44,7 +43,7 @@ class Jogador():
         self.vel_y = 0
 
         self.image= stefan
-        self.image= pygame.transform.scale(self.image, [45,45])
+        self.image= pygame.transform.scale(self.image, [40,50])
         self.rect = self.image.get_rect()
         self.rect = pygame.Rect(self.x, self.y, self.tamanho, self.altura)
 
@@ -109,9 +108,6 @@ class Jogador():
         self.rect.y += self.dy + self.scrollar
     
         return self.scrollar, pontuacao
-    
-    def parar_gameover(self):
-        self.vel_y=0
 
 class Plataforma:
 
@@ -221,7 +217,6 @@ class Button():
 
 # FUNÇÕES
 
-
 def construir_mapa(LARGURA, Y):
     
         P_Y = Y.rect.y - randint(100, 180)
@@ -274,16 +269,26 @@ def render_mapa(plataformas, items, LARGURA, TELA,scrollar):
         if deletar2:
             items.pop(i)
 
+def comeco():
+    pygame.mixer.music.load('musica_fundo.wav')
+    pygame.mixer.music.play(-1)
+    fundo= pygame.image.load('menu.png')
+    fundo= pygame.transform.scale(fundo, [LARGURA,ALTURA])
+    fundo_ret = fundo.get_rect()
+    fundo_ret = pygame.Rect(0, 0, 15, 15)
+    TELA.blit(fundo, fundo_ret)
+    menu()
+
 def menu():
 	while True:
-		jogar = pygame.image.load("jogar.png")
-		jogar = pygame.transform.scale(jogar, (100, 60))
-		botao_jogar= Button(jogar, 400, 500)
+		jogar = pygame.image.load("botaojogar.png")
+		jogar = pygame.transform.scale(jogar, (150, 70))
+		botao_jogar= Button(jogar, 290, 500)
 		
-		sair = pygame.image.load("sair.png")
-		sair = pygame.transform.scale(sair, (100, 60))
-		botao_sair= Button(sair, 200, 200)
-
+		sair = pygame.image.load("botaosair.png")
+		sair = pygame.transform.scale(sair, (150, 70))
+		botao_sair= Button(sair, 290, 600)
+        
 		for evento in pygame.event.get():
 			if evento.type == pygame.QUIT:
 				pygame.quit()
@@ -296,10 +301,7 @@ def menu():
 					sys.exit()
 				if verifica_jogar== True:
 					main()
-					
-
-		TELA.fill("black")
-
+		
 		botao_jogar.update()
 		botao_sair.update()
 		pygame.display.update()
@@ -315,6 +317,12 @@ TELA = pygame.display.set_mode((LARGURA, ALTURA))
 clock = pygame.time.Clock()
 
 def main():
+
+    backgr= pygame.image.load('fundo.png')
+    backgr= pygame.transform.scale(backgr, [LARGURA,ALTURA])
+    backgr_ret = backgr.get_rect()
+    backgr_ret = pygame.Rect(0, 0, 15, 15)
+
     plat_inicial = Plataforma(LARGURA/2 - 100, ALTURA - 100, 200, cores_plataforma['verde'])
     moedas = 0
     vidas = 1
@@ -323,7 +331,7 @@ def main():
     scrollar_tamanho = 100
     scrollar = 0
 
-    MAX_PLATAFORMAS = 10000
+    MAX_PLATAFORMAS = 23
 
     dados = {
         'plataforma': [plat_inicial],
@@ -353,7 +361,7 @@ def main():
             if pygame.key.get_pressed()[K_ESCAPE]:
                 rodar = False
         
-        TELA.fill((0, 0, 0))
+        TELA.blit(backgr, backgr_ret)
         
         player.desenhar(TELA)
         scrollar, pontuacao_somar = player.movimentar(LARGURA, ALTURA, dados["plataforma"],dados["itens"])
@@ -361,6 +369,7 @@ def main():
         pontuacao_somar = 0
         
         if player.rect.top >= 750:
+            perdervida.play()
             if vidas >= 1:
                 vidas -= 1
                 player.vel_y = -50
@@ -370,15 +379,17 @@ def main():
 
 
         if gameover:
-            imagem= pygame.image.load('over.png')
+            pygame.mixer.music.stop()
+            player.GRAVIDADE=0
+            imagem= pygame.image.load('gameover.png')
             imagem= pygame.transform.scale(imagem, [LARGURA,ALTURA])
             retangulo = imagem.get_rect()
-            retangulo = pygame.Rect(60, 60, 15, 15)
+            retangulo = pygame.Rect(0, 0, 15, 15)
             TELA.blit(imagem, retangulo)
             pygame.display.update()
             keys = pg.key.get_pressed()
             if keys[pg.K_SPACE]: #clicar espaço para voltar ao menu
-                menu()
+                comeco()
             if keys[pg.K_ESCAPE]: #clicar esc para sair
                 pygame.quit()
                 sys.exit()
@@ -409,7 +420,6 @@ def main():
 
             render_mapa(dados["plataforma"], dados["itens"], LARGURA, TELA,scrollar)
 
-            
             TELA.blit(mensagem_format, (10, 10))
             TELA.blit(mensagem2_format, (10, 30))
             TELA.blit(mensagem3_format, (10, 50))
@@ -418,5 +428,4 @@ def main():
             clock.tick(FPS)
     pygame.quit()
 
-
-menu()
+comeco()
