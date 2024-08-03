@@ -1,3 +1,10 @@
+#aqui tems as plataformas infinitas e os itens acompanham a plataforma o erro que achei é que se apertar W pro personagem dar aquele pulo as plataformas e os itens não ficam mais sincronizados
+#aqui eu também coloquei a dificuldade progressiva se quiser da para colocar mais, as a coisa que percebi é que se na lista de cores da plataforma não tiver pelo menos um vermelho um azul e um verde as plataformas bugam e os itens também 
+#o erro das plataformas nunca poderem ser da mesma cor a não ser que seja azul já que nesse caso não teriamos itens então sem problema dficulta um pouco da progressao de dificuldade 
+#o codigo em si acho que já esta bom a unica coisa a ver seria realmente a parte grafica de design
+
+
+
 import pygame
 from pygame.locals import *
 from random import *
@@ -18,7 +25,18 @@ cores_plataforma = {
 }
 # IMAGENS
 stefan= pygame.image.load('stefan.png')
-
+imagem_moeda = pygame.image.load('moeda.png')
+imagem_diamante = pygame.image.load('diamante.png')
+imagem_vida = pygame.image.load('coracao.png')
+imagem_mola = pygame.image.load('mola.png')
+imagem_moeda = pygame.transform.scale(imagem_moeda, (20, 20))
+imagem_diamante = pygame.transform.scale(imagem_diamante, (20, 20))
+imagem_vida = pygame.transform.scale(imagem_vida, (20, 20))
+imagem_mola = pygame.transform.scale(imagem_mola, (20, 20))
+imagem_plataforma_normal = pygame.image.load('normal.png')
+imagem_plataforma_quebra = pygame.image.load('quebra.png')
+imagem_plataforma_quebra = pygame.transform.scale(imagem_plataforma_quebra, (100, 20))
+imagem_plataforma_normal = pygame.transform.scale(imagem_plataforma_normal, (100, 20))
 # EFEITOS SONOROS
 pygame.mixer.init()
 som_moeda= pygame.mixer.Sound('coin.flac')
@@ -54,11 +72,11 @@ class Jogador:
         self.scrollar_tamanho = 200
         key = pygame.key.get_pressed()
         if key[pygame.K_a] or key[pygame.K_LEFT]:
-            self.dx -= 15
+            self.dx -= 10
         if key[pygame.K_d] or key[pygame.K_RIGHT]:
-            self.dx += 15
+            self.dx += 10
         if key[pygame.K_w] or key[pygame.K_UP]:
-            self.dy -= 15
+            self.dy -= 10
 
         if self.vel_y < 20:
             self.vel_y += self.GRAVIDADE
@@ -115,8 +133,10 @@ class Plataforma:
         self.vermelho = True if cor == cores_plataforma["vermelho"] else False
 
     def desenhar(self, TELA):
-        pygame.draw.rect(TELA, self.cor, self.rect)
-
+        if not self.vermelho:
+            TELA.blit(imagem_plataforma_normal, self.rect)
+        else:
+            TELA.blit(imagem_plataforma_quebra, self.rect) 
     def mover_azul(self, LARGURA):
         if self.velocida_condition:
             self.X += self.velocidade
@@ -143,9 +163,9 @@ class Plataforma:
 
 class Item:
     def __init__(self, plataforma, cor, i):
-        self.X = plataforma.X + plataforma.L / 2 - 7.5
-        self.Y = plataforma.Y - 15
-        self.rect = pygame.Rect(self.X, self.Y, 15, 15)
+        self.X = plataforma.X + plataforma.L / 2 - 10
+        self.Y = plataforma.Y - 20
+        self.rect = pygame.Rect(self.X, self.Y, 20, 20)
         self.cor = cor
         self.mola = True if cor == cores_plataforma["branco"] else False
         item = randint(1, 200)
@@ -162,16 +182,16 @@ class Item:
     def desenho(self, TELA):
         if self.mola:
             self.cor = (128, 128, 128)
-            pygame.draw.rect(TELA, cores_plataforma["cinza"], self.rect)
+            TELA.blit(imagem_mola, self.rect)
         elif self.moeda == 1:
             self.cor = (255, 215, 0)
-            pygame.draw.rect(TELA, cores_plataforma["dourado"], self.rect)
+            TELA.blit(imagem_moeda, self.rect)
         elif self.moeda == 2:
             self.cor = (0, 255, 255)
-            pygame.draw.rect(TELA, cores_plataforma["ciano"], self.rect)
+            TELA.blit(imagem_diamante, self.rect)
         elif self.moeda == 3:
             self.cor = (255, 0, 255)
-            pygame.draw.rect(TELA, cores_plataforma["roxo"], self.rect)
+            TELA.blit(imagem_vida, self.rect)
 
     def sumir_item(self, player, item):
         if player.rect.colliderect(item):
@@ -219,7 +239,7 @@ def construir_mapa(LISTA_PLATAFORMAS, LARGURA, ALTURA):
     P_Y = ALTURA - 60
     for i, p in enumerate(LISTA_PLATAFORMAS):
         P_L = 100
-        P_X = randint(0, LARGURA - 180)
+        P_X = randint(10, LARGURA - 110)
         cor = cores_plataforma["verde"] if i == 0 else cores_plataforma[p]
         plataform = Plataforma(P_X, P_Y, P_L, cor)
         dados["plataforma"].append(plataform)
@@ -370,9 +390,11 @@ def main():
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT or pygame.key.get_pressed()[K_ESCAPE]:
-                rodar = False
+                pygame.quit()
+                sys.exit()
 
         TELA.blit(backgr, backgr_ret)
+        
         player.desenhar(TELA)
         scrollar, pontuacao_somar = player.movimentar(LARGURA, ALTURA, dados["plataforma"], dados["itens"])
         pontuacao -= pontuacao_somar
@@ -410,7 +432,7 @@ def main():
                 ultima_plataforma = dados["plataforma"][-1]
 
                 # Posição X aleatória, mas dentro dos limites da tela
-                P_X = randint(0, LARGURA - 180)
+                P_X = randint(10, LARGURA - 110)
                 
                 # A nova plataforma será gerada a uma distância controlada da última
                 P_Y = ultima_plataforma.rect.top - randint(100, 150)
@@ -440,10 +462,17 @@ def main():
                 som_vida.play()
                 vidas += 1
 
+            # Atualizando e desenhando a barra lateral
+            
             TELA.blit(mensagem_format, (10, 10))
-            TELA.blit(mensagem2_format, (10, 30))
-            TELA.blit(mensagem3_format, (10, 50))
-            TELA.blit(mensagem4_format, (10, 70))
+            
+            
+            TELA.blit(mensagem2_format, (10, 40))
+            
+            
+            TELA.blit(mensagem3_format, (10, 70))
+            
+            TELA.blit(mensagem4_format, (10, 100))
             pygame.display.update()
             clock.tick(FPS)
 
