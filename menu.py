@@ -7,6 +7,7 @@ LARGURA = 600
 ALTURA = 800
 FPS = 60
 pygame.init()
+pygame.display.set_caption('Cin Jump')
 fonte = pygame.font.SysFont("Comic Sans MS", 20, True, True)
 TELA = pygame.display.set_mode((LARGURA, ALTURA))
 clock = pygame.time.Clock()
