@@ -28,40 +28,34 @@ class Button():
  
 def mensagem_gameover(pontuacao):
     if pontuacao <= 5000:
-        mensagem = "Poderia ter sido melhor"
-        x = 151
+        mensagem = "Reprovado!"
+        x = 190
     elif pontuacao <= 10000:
-        mensagem = "Não foi tão ruim, mas você pode melhorar!"
-        x = 34
+        mensagem = "Ficou na final..."
+        x = 170
     elif pontuacao <= 20000:
-        mensagem = "Bom trabalho! Continue assim!"
+        mensagem = "DOPE! Mas ainda dá para melhorar"
         x = 105
     elif pontuacao <= 30000:
-        mensagem = "Excelente! Você está ficando bom nisso!"
-        x = 56
+        mensagem = "CRAZY! Continue pulando!"
+        x = 120
     elif pontuacao <= 40000:
-        mensagem = "Impressionante! Você está quase no topo!"
-        x = 41
+        mensagem = "BADASS! Tirou 10 em IP com essa pontuação"
+        x = 30
     elif pontuacao <= 50000:
-        mensagem = "Fantástico! Quase um mestre do jogo!"
-        x = 66
+        mensagem = "APOCALYPTIC! Joga muito!"
+        x = 140
     elif pontuacao <= 60000:
-        mensagem = "Incrível! Você é um jogador de elite!"
-        x = 72
+        mensagem = "SAVAGE! Você ultrapassou César!"
+        x = 105
     elif pontuacao <= 70000:
-        mensagem = "Fenomenal! Poucos chegam tão longe!"
-        x = 60
+        mensagem = "SICK SKILLS! VOA MULEKE!"
+        x = 140
     elif pontuacao <= 80000:
-        mensagem = "Surpreendente! Você está entre os melhores!"
-        x = 32
-    elif pontuacao <= 90000:
-        mensagem = "Magnífico! Sua habilidade é invejável!"
-        x = 37
-    elif pontuacao < 100000:
-        mensagem = "Lendário! Você está no topo do mundo!"
-        x = 47
-    else:  # pontuacao >= 100000
-        mensagem = "Divino! Você é uma lenda viva!"
-        x = 113
+        mensagem = "SSSTYLISH! Já pode tirar o diploma!"
+        x = 70
+    elif pontuacao >= 100000:
+        mensagem = "A quanto tempo você está aqui?"
+        x = 105
     
     return mensagem, x
