@@ -29,19 +29,19 @@ class Button():
 def mensagem_gameover(pontuacao):
     if pontuacao <= 5000:
         mensagem = "Reprovado!"
-        x = 190
+        x = 200
     elif pontuacao <= 10000:
         mensagem = "Ficou na final..."
-        x = 170
+        x = 200
     elif pontuacao <= 20000:
         mensagem = "DOPE! Mas ainda dá para melhorar"
         x = 105
     elif pontuacao <= 30000:
         mensagem = "CRAZY! Continue pulando!"
-        x = 120
+        x = 140
     elif pontuacao <= 40000:
         mensagem = "BADASS! Tirou 10 em IP com essa pontuação"
-        x = 30
+        x = 25
     elif pontuacao <= 50000:
         mensagem = "APOCALYPTIC! Joga muito!"
         x = 140
@@ -50,10 +50,10 @@ def mensagem_gameover(pontuacao):
         x = 105
     elif pontuacao <= 70000:
         mensagem = "SICK SKILLS! VOA MULEKE!"
-        x = 140
-    elif pontuacao <= 80000:
+        x = 130
+    elif pontuacao >= 70001 and pontuacao < 100000:
         mensagem = "SSSTYLISH! Já pode tirar o diploma!"
-        x = 70
+        x = 60
     elif pontuacao >= 100000:
         mensagem = "A quanto tempo você está aqui?"
         x = 105

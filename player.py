@@ -1,14 +1,13 @@
 import pygame
 from sprites import *
 class Jogador:
-    def __init__(self, x, y):
+    def __init__(self, personagem, x, y):
         self.x = x
         self.y = y
         self.altura = 50
         self.tamanho = 40
         self.vel_y = 0
-        self.image= stefan
-        self.image= pygame.transform.scale(self.image, [40,50])
+        self.image= personagem
         self.rect = self.image.get_rect()
         self.rect = pygame.Rect(self.x, self.y, self.tamanho, self.altura)
         self.cor = (254, 254, 0)
@@ -29,8 +28,6 @@ class Jogador:
             self.dx -= 10
         if key[pygame.K_d] or key[pygame.K_RIGHT]:
             self.dx += 10
-        if key[pygame.K_w] or key[pygame.K_UP]:
-            self.dy -= 10
 
         if self.vel_y < 20:
             self.vel_y += self.GRAVIDADE

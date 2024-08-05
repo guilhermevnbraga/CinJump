@@ -14,6 +14,17 @@ cores_plataforma = {
 }
 # IMAGENS
 stefan= pygame.image.load('./images/stefan.png')
+anjolina = pygame.image.load('./images/anjolina.png')
+ricardo = pygame.image.load('./images/ricardo.png')
+sergio = pygame.image.load('./images/sergio.png')
+stefan_selecionar = pygame.transform.scale(stefan, (110, 210))
+anjolina_selecionar = pygame.transform.scale(anjolina, (120, 220))
+ricardo_selecionar = pygame.transform.scale(ricardo, (150, 250))
+sergio_selecionar = pygame.transform.scale(sergio, (140, 240))
+stefan_player = pygame.transform.scale(stefan, [40, 60])
+anjolina_player = pygame.transform.scale(anjolina, [40,70])
+ricardo_player = pygame.transform.scale(ricardo, [50,80])
+sergio_player = pygame.transform.scale(sergio, [50,80])
 imagem_moeda = pygame.image.load('./images/moeda.png')
 imagem_diamante = pygame.image.load('./images/diamante.png')
 imagem_vida = pygame.image.load('./images/coracao.png')

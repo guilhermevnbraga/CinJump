@@ -8,6 +8,7 @@ from menu import *
 from plataforms_itens import *
 from player import *
 from game_logic import *
+
 def recorde_def(pontuação):
     global pontuacao_recorde
     if pontuação>pontuacao_recorde:
@@ -39,7 +40,7 @@ def menu():
                     pygame.quit()
                     sys.exit()
                 if verifica_jogar == True:
-                    main()
+                    selecionar_personagem()
 
         # Exibição do recorde na tela
         if(pontuacao_recorde==0):
@@ -54,7 +55,44 @@ def menu():
         botao_jogar.update()
         botao_sair.update()
         pygame.display.update()	
-def main():
+
+def selecionar_personagem():
+    imagem_seleção = pygame.image.load("./images/seleção.png")
+    fundo_seleção = pygame.transform.scale(imagem_seleção, (600,800))    
+    fundo_rect = fundo_seleção.get_rect()
+    fundo_rect = pygame.Rect(0,0,15,15)
+    TELA.blit(fundo_seleção, fundo_rect)
+    while True:
+        stefan_select = Button(stefan_selecionar, 70, 470)
+        anjolina_select = Button(anjolina_selecionar, 208, 470)
+        ricardo_select = Button(ricardo_selecionar, 370, 470)
+        sérgio_select = Button(sergio_selecionar, 517, 470)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                verificar_stefan = stefan_select.clique(pygame.mouse.get_pos())
+                verificar_anjolina = anjolina_select.clique(pygame.mouse.get_pos())
+                verificar_ricardo = ricardo_select.clique(pygame.mouse.get_pos())
+                verificar_sérgio = sérgio_select.clique(pygame.mouse.get_pos())
+                if verificar_stefan:
+                    main(stefan_player)
+                if verificar_anjolina:
+                    main(anjolina_player)
+                if verificar_ricardo:
+                    main(ricardo_player)
+                if verificar_sérgio:
+                    main(sergio_player)
+        
+        stefan_select.update()
+        anjolina_select.update()
+        ricardo_select.update()
+        sérgio_select.update()
+        pygame.display.update()	
+
+def main(personagem):
     backgr = pygame.image.load('./images/fundo.png')
     backgr= pygame.transform.scale(backgr, [LARGURA,ALTURA])
     backgr_ret = backgr.get_rect()
@@ -71,7 +109,7 @@ def main():
     rodar = True
     X_PLAYER = dados["plataforma"][0].rect.left + 30
     Y_PLAYER = dados["plataforma"][0].rect.top - 50
-    player = Jogador(X_PLAYER, Y_PLAYER)
+    player = Jogador(personagem, X_PLAYER, Y_PLAYER)
     gameover= False
     while rodar:
 
