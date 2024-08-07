@@ -54,6 +54,10 @@ Cursor do mouse para selecionar os botões.
 	Screenshots do Jogo:
 
 <img src="./images/home.jpeg"></img>
+<img src="./images/chooseCharacter.jpeg"></img>
+<img src="./images/game1.jpeg"></img>
+<img src="./images/game2.jpeg"></img>
+<img src="./images/gameover.jpeg"></img>
 
 
 
