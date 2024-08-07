@@ -125,6 +125,8 @@ Vitor Lacerda <vll>
 
 ## Arquitetura do Projeto:
 
+<img src="./images/estrutura.jpeg">
+
 <ul>
     <li>
         O modo como os arquivos e pastas foram organizados está listado acima, onde as setas representam a ordem import em que nós colocamos um arquivo dentro de outro;
