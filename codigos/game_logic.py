@@ -80,6 +80,25 @@ def render_mapa(plataformas, items, LARGURA, TELA, scrollar):
         else:
             plataforma.desenhar(TELA)
 
+#função que da a sensação de plataformas infinitas
+def plataforma_infinita(dados, MAX_PLATAFORMAS, espacamento, pontuacao, LARGURA):
+    #ele vê se o toal de plataformas restantes é menor que a plataformas maximas caso seja menor ele precisa criar plataformas até que seja maior ou igual ao max_plataformas
+    while len(dados["plataforma"]) < MAX_PLATAFORMAS:
+        #nova_plataforma
+        nova_plataforma = choice(cores_plataforma["cores totais"])
+        ultima_plataforma = dados["plataforma"][-1]
+        
+        P_X = randint(10, LARGURA - 110)
+        P_Y = ultima_plataforma.rect.top - randint(espacamento[0], espacamento[1])
+        P_L = 100
+
+        cor = cores_plataforma[nova_plataforma]
+        nova_plat = Plataforma(P_X, P_Y, P_L, cor)
+        dados["plataforma"].append(nova_plat)
+        #caso a plataforma não se mova criamos o novo item que ficara nela 
+        if cor != cores_plataforma["azul"]:
+            novo_item = Item(nova_plat, cor, len(dados["plataforma"]), pontuacao)
+            dados["itens"].append(novo_item)
 #aqui é onde atualizamos a dificuldade do jogo onde com o passar do tempo cada vez mais plataformas que quebram são criadas e a distancia das plataformas almenta com o passar do tempo
 def atualizar_dificuldade(pontuacao):
     #o modo que alteramos a quantidade de plataformas que quebram é mudando a lista com as cores totais de plataforma presentes no dicionario do arquivo sprites
