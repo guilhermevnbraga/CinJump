@@ -53,7 +53,7 @@ Setinhas para esquerda e direita ou A e D para movimentar o personagem para, res
 Cursor do mouse para selecionar os botões.
 	Screenshots do Jogo:
 
-
+<img src="./images/home.jpeg"></img>
 
 
 
