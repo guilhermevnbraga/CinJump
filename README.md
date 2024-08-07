@@ -269,6 +269,14 @@ Vitor Lacerda <vll>
         </ul>
     </li>
     <li>
+	Tuplas:
+        <ul>
+            <li>
+                Utilizado para armazenar cores para diferenciar itens e plataformas.
+            </li>
+        </ul>
+    </li>
+    <li>
         Dicionários:
         <ul>
             <li>
