@@ -206,25 +206,7 @@ def mensagem_gameover(pontuacao):
         x = 105
     
     return mensagem, x
-#função que da a sensação de plataformas infinitas        
-def plataforma_infinita(dados, MAX_PLATAFORMAS, espacamento, pontuacao):
-    #ele vê se o toal de plataformas restantes é menor que a plataformas maximas caso seja menor ele precisa criar plataformas até que seja maior ou igual ao max_plataformas
-    while len(dados["plataforma"]) < MAX_PLATAFORMAS:
-        #nova_plataforma
-        nova_plataforma = choice(cores_plataforma["cores totais"])
-        ultima_plataforma = dados["plataforma"][-1]
-        
-        P_X = randint(10, LARGURA - 110)
-        P_Y = ultima_plataforma.rect.top - randint(espacamento[0], espacamento[1])
-        P_L = 100
 
-        cor = cores_plataforma[nova_plataforma]
-        nova_plat = Plataforma(P_X, P_Y, P_L, cor)
-        dados["plataforma"].append(nova_plat)
-        #caso a plataforma não se mova criamos o novo item que ficara nela 
-        if cor != cores_plataforma["azul"]:
-            novo_item = Item(nova_plat, cor, len(dados["plataforma"]), pontuacao)
-            dados["itens"].append(novo_item)
 
 #função principal onde rodamos o jogo
 def main(personagem):
@@ -282,7 +264,7 @@ def main(personagem):
         else:
             render_mapa(dados["plataforma"], dados["itens"], LARGURA, TELA, scrollar)#renderiza o mapa
 
-            plataforma_infinita(dados, MAX_PLATAFORMAS, espacamento, pontuacao)#cria novas plataformas caso nescessario
+            plataforma_infinita(dados, MAX_PLATAFORMAS, espacamento, pontuacao, LARGURA)#cria novas plataformas caso nescessario
             
             espacamento1 = atualizar_dificuldade(pontuacao)#atualiza o novo espaçamento da tela baseado na dificuldade
             if espacamento1 is not None:
