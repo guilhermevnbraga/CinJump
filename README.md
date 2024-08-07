@@ -10,7 +10,7 @@ Vitor Lacerda <vll>
 ## Sobre o jogo:
 
 <ul>
-	<li>Jogo criado como um projeto final da cadeira de Introdução à Programação do curso de Ciência da Computação da UFPE.</li>
+<li>Jogo criado como um projeto final da cadeira de Introdução à Programação do curso de Ciência da Computação da UFPE.</li>
 	<li>Inspirado no clássico Doodle Jump, o jogo consiste em pular em plataformas verticais infinitas para conseguir a maior pontuação, só que com alguns elementos do Centro de Informática.</li>
 	<li>
 		É possível encontrar as seguintes mecânicas no jogo:
