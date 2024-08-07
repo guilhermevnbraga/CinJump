@@ -1,12 +1,11 @@
 # CIn Jump
 
 ## Desenvolvedores
-    Ruan Alexandre Ferreira da Silva <rafs2></br>
-    Guilherme Vinícius Nigro Braga <gvnb></br>
-    Elisson Dias de Oliveira <edo></br>
-    Guilherme José da Silva <gjs></br>
-    Arthur Rocha Campos <arc></br>
-    Vitor Lacerda <vll>
+Elisson Dias de Oliveira <edo></br>
+Guilherme José da Silva <gjs></br>
+Guilherme Vinícius Nigro Braga <gvnb></br>
+Ruan Alexandre Ferreira da Silva <rafs2></br>
+Vitor Lacerda <vll>
 
 Sobre o jogo:
 
