@@ -1,7 +1,6 @@
-<h1>CIn Jump</h1>
+# CIn Jump
 
 <h2>
-    Grupo:</br>
     Ruan Alexandre Ferreira da Silva <rafs2></br>
     Guilherme Vinícius Nigro Braga <gvnb></br>
     Elisson Dias de Oliveira <edo></br>
