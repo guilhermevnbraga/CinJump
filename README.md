@@ -15,29 +15,51 @@ Vitor Lacerda <vll>
 
 Sobre o jogo:
 
-Jogo criado como um projeto final da cadeira de Introdução à Programação do curso de Ciência da Computação da UFPE.
-Inspirado no clássico Doodle Jump, o jogo consiste em pular em plataformas verticais infinitas para conseguir a maior pontuação, só que com alguns elementos do Centro de Informática. 
-É possível encontrar as seguintes mecânicas no jogo:
-4 personagens selecionáveis, cada um diferentes mecânicas:
-Stefan: Pulo mais alto
-Anjolina: Pulo muito mais alto, porém com uma gravidade maior
-Ricardo: Maior velocidade lateral
-Sérgio: Gravidade menor 
-
-
-3 coletáveis diferentes e que influenciam na jogabilidade:
-Moedas: + 100 pontos
-Diamantes: +500 pontos
-Vidas: Faz com que o jogador sobreviva ao cair fora do mapa
-4 tipos de plataformas com diferentes funcionalidades:
-Madeira normal: plataforma sem nenhuma especialidade
-Madeira vermelha: Quebra após pular nela
-Madeira com movimento: plataforma que se movimenta e que possui 6 níveis de velocidade.
-Madeira com mola: possui uma mola que aumenta a distância do pulo após o contato
-Pontuação recorde pessoal (funciona apenas com o jogo aberto)
-Mensagens de classificação dependendo da sua pontuação final 
-Níveis de dificuldade discretos que variam dependendo de sua pontuação atual
- 
+<ul>
+	<li>Jogo criado como um projeto final da cadeira de Introdução à Programação do curso de Ciência da Computação da UFPE.</li>
+	<li>Inspirado no clássico Doodle Jump, o jogo consiste em pular em plataformas verticais infinitas para conseguir a maior pontuação, só que com alguns elementos do Centro de Informática.</li>
+	<li>
+		É possível encontrar as seguintes mecânicas no jogo:
+		<ul>
+			<li>
+				4 personagens selecionáveis, cada um diferentes mecânicas:
+				<ul>
+					<li>Stefan: Pulo mais alto</li>
+					<li>Anjolina: Pulo muito mais alto, porém com uma gravidade maior</li>
+					<li>Ricardo: Maior velocidade lateral</li>
+					<li>Sérgio: Gravidade menor</li>
+				</ul>
+			</li>
+			<li>
+				3 coletáveis diferentes e que influenciam na jogabilidade:
+				<ul>
+					<li>Moedas: + 100 pontos</li>
+					<li>Diamantes: +500 pontos</li>
+					<li>Vidas: Faz com que o jogador sobreviva ao cair fora do mapa</li>
+				</ul>
+			</li>
+			<li>
+				4 tipos de plataformas com diferentes funcionalidades:
+				<ul>
+					<li>Madeira normal: plataforma sem nenhuma especialidade</li>
+					<li>Madeira vermelha: Quebra após pular nela</li>
+					<li>Madeira com movimento: plataforma que se movimenta e que possui 6 níveis de velocidade.</li>
+					<li>Madeira com mola: possui uma mola que aumenta a distância do pulo após o contato</li>
+				</ul>
+			</li>
+			<li>
+				Pontuação recorde pessoal (funciona apenas com o jogo aberto)
+			</li>
+			<li>
+				Mensagens de classificação dependendo da sua pontuação final 
+			</li>
+			</li>
+			<li>
+				Níveis de dificuldade discretos que variam dependendo de sua pontuação atual
+			</li>
+		</ul>
+	</li>
+</ul>
 
 Requisitos:
 Algum local que rode python (Vscode ou Pycharm, por exemplo)
@@ -155,12 +177,9 @@ Pergunta 1°
 Resposta:
 
 A geração das plataformas, quando chegava na metade/final do limite determinado da lista de plataformas, as plataformas subsequentes ficavam mais espaçadas do que o normal e que os itens não estavam sendo gerados corretamente em cima da plataforma, ficando espalhado pelo mapa. Após pedir ajuda dos monitores e ninguém apresentar uma solução plausível até que em certo momento Arthur se lembrou de ter retirado uma parte do código de uma função para colocá-lo dentro do loop principal, tentamos isso e deu certo, não sabemos o exato motivo do porque, mas funcionou.
-
 Pergunta 2°
-"Qual foi o maior desafio enfrentado durante o projeto? Como vocês lidaram com ele?"
-
+Qual foi o maior desafio enfrentado durante o projeto? Como vocês lidaram com ele?
 Resposta:
-
 Resolver bugs foi definitivamente o maior desafio, devido a nossa inexperiência com o pygame entender onde exatamente havia os erros foi mais complicado que quando mexemos com python normal, para lidar com isso bastou estudar mais sobre a linguagem, pedir ajuda aos monitores, conversar entre si e revisar o código juntos.
 
 
