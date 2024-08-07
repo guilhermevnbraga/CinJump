@@ -240,7 +240,9 @@ def main(personagem):
                 sys.exit()
             if pygame.key.get_pressed()[K_g]:#caso a tecla selecionada seja (g) o jogo vai para a tela de game over para o caso do jogador querer sair do jogo sem fechar ele
                 gameover = True
+                #transporta o player para uma posição fora da tela
                 player.rect.y = 1000
+                player.vel_y = 1000
         TELA.blit(backgr, backgr_ret)#carrega a imagem de fundo
 
         player.desenhar(TELA)#desenha o player na tela
