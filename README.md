@@ -2,6 +2,7 @@
 
 ## Desenvolvedores
 
+Arthur Rocha Campos <arc></br>
 Elisson Dias de Oliveira <edo></br>
 Guilherme José da Silva <gjs></br>
 Guilherme Vinícius Nigro Braga <gvnb></br>
