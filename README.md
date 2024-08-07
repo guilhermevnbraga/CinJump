@@ -83,7 +83,7 @@ Vitor Lacerda <vll>
         Baixe o repositório no seu PC;
     </li>
     <li>
-        Abra o diretório x no seu compilador de preferência;
+        Abra a pasta do jogo no seu terminal ou IDE de preferência;
     </li>
     <li>
         Execute o arquivo “main.py”.
