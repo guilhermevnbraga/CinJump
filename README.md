@@ -1,7 +1,5 @@
 <h1>CIn Jump</h1>
 
-
-
 Grupo:</br>
 Ruan Alexandre Ferreira da Silva <rafs2></br>
 Guilherme Vinícius Nigro Braga <gvnb></br>
@@ -9,9 +7,6 @@ Elisson Dias de Oliveira <edo></br>
 Guilherme José da Silva <gjs></br>
 Arthur Rocha Campos <arc></br>
 Vitor Lacerda <vll>
-
-
-
 
 Sobre o jogo:
 
