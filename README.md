@@ -2,6 +2,7 @@
 
 <div>
     <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/guilhermevnbraga/CinJump">
+    <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/t/guilhermevnbraga/CinJump">
     <img alt="Último commit" src="https://img.shields.io/github/last-commit/guilhermevnbraga/CinJump">
     <img alt="Tamanho do repositório" src="https://img.shields.io/github/repo-size/guilhermevnbraga/CinJump">
     <img alt="Github contributors" src="https://img.shields.io/github/contributors/guilhermevnbraga/CinJump">
