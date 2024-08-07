@@ -2,12 +2,12 @@
 
 
 
-Grupo:
-Ruan Alexandre Ferreira da Silva <rafs2>
-Guilherme Vinícius Nigro Braga <gvnb>
-Elisson Dias de Oliveira <edo>
-Guilherme José da Silva <gjs>
-Arthur Rocha Campos <arc>
+Grupo:</br>
+Ruan Alexandre Ferreira da Silva <rafs2></br>
+Guilherme Vinícius Nigro Braga <gvnb></br>
+Elisson Dias de Oliveira <edo></br>
+Guilherme José da Silva <gjs></br>
+Arthur Rocha Campos <arc></br>
 Vitor Lacerda <vll>
 
 
