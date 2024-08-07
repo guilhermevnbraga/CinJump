@@ -262,14 +262,14 @@ def main(personagem):
             game_over(pontuacao, player)
 
         else:
-            render_mapa(dados["plataforma"], dados["itens"], LARGURA, TELA, scrollar)#renderiza o mapa
+            render_mapa(dados["plataforma"], dados["itens"], LARGURA, TELA, scrollar)#renderiza o mapa para apagar plataformas que saiam da tela assimm como itens
 
             plataforma_infinita(dados, MAX_PLATAFORMAS, espacamento, pontuacao, LARGURA)#cria novas plataformas caso nescessario
             
             espacamento1 = atualizar_dificuldade(pontuacao)#atualiza o novo espaçamento da tela baseado na dificuldade
             if espacamento1 is not None:
                 espacamento = espacamento1#atualiza o espaçamento
-            coletou = update_mapa(dados["plataforma"], dados["itens"], player)#vÊ se algum item foi coletado
+            coletou = update_mapa(dados["plataforma"], dados["itens"], player)#vÊ se algum item foi coletado ou plataforma foi quebrada
             if coletou == "moeda":#caso coletou moeda
                 moedas += 1
                 som_moeda.play()
