@@ -7,10 +7,10 @@ Guilherme Vinícius Nigro Braga <gvnb></br>
 Ruan Alexandre Ferreira da Silva <rafs2></br>
 Vitor Lacerda <vll>
 
-## Sobre o jogo:
+## Sobre o jogo
 
 <ul>
-<li>Jogo criado como um projeto final da cadeira de Introdução à Programação do curso de Ciência da Computação da UFPE.</li>
+	<li>Jogo criado como um projeto final da cadeira de Introdução à Programação do curso de Ciência da Computação da UFPE.</li>
 	<li>Inspirado no clássico Doodle Jump, o jogo consiste em pular em plataformas verticais infinitas para conseguir a maior pontuação, só que com alguns elementos do Centro de Informática.</li>
 	<li>
 		É possível encontrar as seguintes mecânicas no jogo:
@@ -55,9 +55,15 @@ Vitor Lacerda <vll>
 	</li>
 </ul>
 
-Requisitos:
-Algum local que rode python (Vscode ou Pycharm, por exemplo)
-Ter a biblioteca “pygame” instalada (preferencialmente, a última versão)
+## Requisitos
+<ul>
+    <li>
+        Algum local que rode python (Vscode ou Pycharm, por exemplo)
+    </li>
+    <li>
+        Ter a biblioteca “pygame” instalada (preferencialmente, a última versão)
+    </li>
+</ul>
 
 	Como jogar:
 Baixe o repositório no seu PC
