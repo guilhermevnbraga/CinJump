@@ -10,46 +10,46 @@ Vitor Lacerda <vll>
 ## Sobre o jogo
 
 <ul>
-	<li>Jogo criado como um projeto final da cadeira de Introdução à Programação do curso de Ciência da Computação da UFPE.</li>
-	<li>Inspirado no clássico Doodle Jump, o jogo consiste em pular em plataformas verticais infinitas para conseguir a maior pontuação, só que com alguns elementos do Centro de Informática.</li>
+	<li>Jogo criado como um projeto final da cadeira de Introdução à Programação do curso de Ciência da Computação da UFPE;</li>
+	<li>Inspirado no clássico Doodle Jump, o jogo consiste em pular em plataformas verticais infinitas para conseguir a maior pontuação, só que com alguns elementos do Centro de Informática;</li>
 	<li>
 		É possível encontrar as seguintes mecânicas no jogo:
 		<ul>
 			<li>
 				4 personagens selecionáveis, cada um diferentes mecânicas:
 				<ul>
-					<li>Stefan: Pulo mais alto</li>
-					<li>Anjolina: Pulo muito mais alto, porém com uma gravidade maior</li>
-					<li>Ricardo: Maior velocidade lateral</li>
-					<li>Sérgio: Gravidade menor</li>
+					<li>Stefan: Pulo mais alto;</li>
+					<li>Anjolina: Pulo muito mais alto, porém com uma gravidade maior;</li>
+					<li>Ricardo: Maior velocidade lateral;</li>
+					<li>Sérgio: Gravidade menor.</li>
 				</ul>
 			</li>
 			<li>
 				3 coletáveis diferentes e que influenciam na jogabilidade:
 				<ul>
-					<li>Moedas: + 100 pontos</li>
-					<li>Diamantes: +500 pontos</li>
-					<li>Vidas: Faz com que o jogador sobreviva ao cair fora do mapa</li>
+					<li>Moedas: + 100 pontos;</li>
+					<li>Diamantes: +500 pontos;</li>
+					<li>Vidas: Faz com que o jogador sobreviva ao cair fora do mapa.</li>
 				</ul>
 			</li>
 			<li>
 				4 tipos de plataformas com diferentes funcionalidades:
 				<ul>
-					<li>Madeira normal: plataforma sem nenhuma especialidade</li>
-					<li>Madeira vermelha: Quebra após pular nela</li>
-					<li>Madeira com movimento: plataforma que se movimenta e que possui 6 níveis de velocidade.</li>
-					<li>Madeira com mola: possui uma mola que aumenta a distância do pulo após o contato</li>
+					<li>Madeira normal: plataforma sem nenhuma especialidade;</li>
+					<li>Madeira vermelha: Quebra após pular nela;</li>
+					<li>Madeira com movimento: plataforma que se movimenta e que possui 6 níveis de velocidade;</li>
+					<li>Madeira com mola: possui uma mola que aumenta a distância do pulo após o contato.</li>
 				</ul>
 			</li>
 			<li>
-				Pontuação recorde pessoal (funciona apenas com o jogo aberto)
+				Pontuação recorde pessoal (funciona apenas com o jogo aberto);
 			</li>
 			<li>
-				Mensagens de classificação dependendo da sua pontuação final 
+				Mensagens de classificação dependendo da sua pontuação final ;
 			</li>
 			</li>
 			<li>
-				Níveis de dificuldade discretos que variam dependendo de sua pontuação atual
+				Níveis de dificuldade discretos que variam dependendo de sua pontuação atual.
 			</li>
 		</ul>
 	</li>
@@ -58,21 +58,35 @@ Vitor Lacerda <vll>
 ## Requisitos
 <ul>
     <li>
-        Algum local que rode python (Vscode ou Pycharm, por exemplo)
+        Algum local que rode python (Vscode ou Pycharm, por exemplo);
     </li>
     <li>
-        Ter a biblioteca “pygame” instalada (preferencialmente, a última versão)
+        Ter a biblioteca “pygame” instalada (preferencialmente, a última versão).
     </li>
 </ul>
 
-	Como jogar:
-Baixe o repositório no seu PC
-Abra o diretório x no seu compilador de preferência
-Execute o arquivo “main.py”
+## Como jogar
+<ul>
+    <li>
+        Baixe o repositório no seu PC;
+    </li>
+    <li>
+        Abra o diretório x no seu compilador de preferência;
+    </li>
+    <li>
+        Execute o arquivo “main.py”.
+    </li>
+</ul>
 
-Controles:
-Setinhas para esquerda e direita ou A e D para movimentar o personagem para, respectivamente, esquerda ou direita
-Cursor do mouse para selecionar os botões.
+## Controles
+<ul>
+    <li>
+        Setinhas para esquerda e direita ou A e D para movimentar o personagem para, respectivamente, esquerda ou direita;
+    </li>
+    <li>
+        Cursor do mouse para selecionar os botões.
+    </li>
+</ul>
 	Screenshots do Jogo:
 
 <img src="./images/home.jpeg"></img>
