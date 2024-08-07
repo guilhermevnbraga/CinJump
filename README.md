@@ -1,5 +1,7 @@
 # CIn Jump
 
+<img alt="Contador de linguagens" src="https://img.shields.io/github/license/guilhermevnbraga/CinJump">
+
 ## Desenvolvedores
 
 Arthur Rocha Campos <arc></br>
