@@ -7,7 +7,7 @@ Guilherme Vinícius Nigro Braga <gvnb></br>
 Ruan Alexandre Ferreira da Silva <rafs2></br>
 Vitor Lacerda <vll>
 
-Sobre o jogo:
+## Sobre o jogo:
 
 <ul>
 	<li>Jogo criado como um projeto final da cadeira de Introdução à Programação do curso de Ciência da Computação da UFPE.</li>
