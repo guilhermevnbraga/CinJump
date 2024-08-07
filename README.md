@@ -155,9 +155,12 @@ Pergunta 1°
 Resposta:
 
 A geração das plataformas, quando chegava na metade/final do limite determinado da lista de plataformas, as plataformas subsequentes ficavam mais espaçadas do que o normal e que os itens não estavam sendo gerados corretamente em cima da plataforma, ficando espalhado pelo mapa. Após pedir ajuda dos monitores e ninguém apresentar uma solução plausível até que em certo momento Arthur se lembrou de ter retirado uma parte do código de uma função para colocá-lo dentro do loop principal, tentamos isso e deu certo, não sabemos o exato motivo do porque, mas funcionou.
+
 Pergunta 2°
-Qual foi o maior desafio enfrentado durante o projeto? Como vocês lidaram com ele?
+"Qual foi o maior desafio enfrentado durante o projeto? Como vocês lidaram com ele?"
+
 Resposta:
+
 Resolver bugs foi definitivamente o maior desafio, devido a nossa inexperiência com o pygame entender onde exatamente havia os erros foi mais complicado que quando mexemos com python normal, para lidar com isso bastou estudar mais sobre a linguagem, pedir ajuda aos monitores, conversar entre si e revisar o código juntos.
 
 
